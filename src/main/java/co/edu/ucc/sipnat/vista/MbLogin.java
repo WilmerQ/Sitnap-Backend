@@ -32,8 +32,8 @@ public class MbLogin implements Serializable {
     private Usuario usuario;
     private String nombreDeUsuaio;
     private String password;
-    private boolean autenticado = false;
-    private boolean isusuario = false;
+    private Boolean autenticado;
+    private Boolean isusuario;
 
     @EJB
     private CommonsBean cb;
@@ -46,10 +46,16 @@ public class MbLogin implements Serializable {
 
     @PostConstruct
     public void init() {
-        usuario = new Usuario();
-        autenticado = false;
-        isusuario = false;
-        SessionOperations.setSessionValue("USUARIO", Boolean.FALSE);
+        usuario = (Usuario) SessionOperations.getSessionValue("USUARIO");
+        if (usuario == null) {
+            usuario = new Usuario();
+            autenticado = Boolean.FALSE;
+            isusuario = Boolean.FALSE;
+            SessionOperations.setSessionValue("USER", Boolean.FALSE);
+        }else{
+           autenticado = Boolean.TRUE;
+           isusuario = Boolean.TRUE;
+        }    
     }
 
     public String accionLogin() {
@@ -57,31 +63,30 @@ public class MbLogin implements Serializable {
         context.getExternalContext().getFlash().setKeepMessages(true);
         autenticado = false;
         isusuario = false;
-
-        SessionOperations.setSessionValue("USUARIO", Boolean.FALSE);
-
         Usuario u = ll.login(nombreDeUsuaio, password);
+        SessionOperations.setSessionValue("USER", Boolean.FALSE);
         if (u != null) {
             usuario = u;
             autenticado = true;
             isusuario = true;
-            SessionOperations.setSessionValue("USUARIO", Boolean.TRUE);
+            SessionOperations.setSessionValue("USER", Boolean.TRUE);
             SessionOperations.setSessionValue("USUARIO", usuario);
+            
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, u.getNombreUsuario(), "Bienvenido"));
             redirect("usuario/index.xhtml");
         } else {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Usuario y/o contraseÃ±as no validos"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Usuario y/o contraseñas no validos"));
 
         }
         return null;
     }
-    
-     public String accionLogout() {
+
+    public String accionLogout() {
         init();
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         try {
-            SessionOperations.setSessionValue("USUARIO", Boolean.FALSE);
+            SessionOperations.setSessionValue("USER", Boolean.FALSE);
             context.getExternalContext().invalidateSession();
         } catch (Exception e) {
 
@@ -91,7 +96,7 @@ public class MbLogin implements Serializable {
         redirect(contextPath);
         return null;
     }
-    
+
     private void redirect(String url) {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
@@ -117,22 +122,35 @@ public class MbLogin implements Serializable {
         this.password = password;
     }
 
-    public boolean isAutenticado() {
+    public Boolean getAutenticado() {
         return autenticado;
     }
 
-    public void setAutenticado(boolean autenticado) {
+    public void setAutenticado(Boolean autenticado) {
         this.autenticado = autenticado;
     }
 
-    public boolean isIsusuario() {
+    public LogicaLogin getLl() {
+        return ll;
+    }
+
+    public void setLl(LogicaLogin ll) {
+        this.ll = ll;
+    }
+
+    public Boolean getIsusuario() {
         return isusuario;
     }
 
-    public void setIsusuario(boolean isusuario) {
+    public void setIsusuario(Boolean isusuario) {
         this.isusuario = isusuario;
     }
-    
-    
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }

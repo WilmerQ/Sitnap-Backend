@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.seduridad;
 
+import co.edu.ucc.sipnat.modelo.Usuario;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -50,7 +51,8 @@ public class UsuarioFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        if (req.getSession().getAttribute("USUARIO")!=null && ((Boolean) req.getSession().getAttribute("USUARIO"))) {
+        Usuario usuario = (Usuario) req.getSession().getAttribute("USUARIO");
+        if (usuario !=null && ((Boolean) req.getSession().getAttribute("USER"))) {
             chain.doFilter(request, response);
         } else {
             req.getSession().setAttribute("NO_AUTORIZADO", Boolean.TRUE);

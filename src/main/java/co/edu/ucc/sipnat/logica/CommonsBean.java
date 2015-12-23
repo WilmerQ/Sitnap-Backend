@@ -58,7 +58,12 @@ public class CommonsBean {
 
     public Object getById(Class o, Long id) {
         String nombreClase = o.getSimpleName();
-        return (CamposComunesdeEntidad) em.createQuery("Select o from " + nombreClase + " o where o.id = :id").setParameter("id", id).getSingleResult();
+        try {
+            return (CamposComunesdeEntidad) em.createQuery("Select o from " + nombreClase + " o where o.id = :id").setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+        
     }
 
     public List getByOneField(Class o, String campo, Object value) {

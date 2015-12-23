@@ -49,7 +49,7 @@ public class AutenticadoFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        if (req.getSession().getAttribute("USUARIO") != null && ((Boolean) req.getSession().getAttribute("USUARIO"))) {
+        if (req.getSession().getAttribute("USUARIO") != null && ((Boolean) req.getSession().getAttribute("USER"))) {
             res.sendRedirect(req.getContextPath() + "/usuario/");
         } else {
             chain.doFilter(request, response);

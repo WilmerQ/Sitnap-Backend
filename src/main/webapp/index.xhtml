@@ -1,35 +1,116 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
+      xmlns:f="http://java.sun.com/jsf/core">
 
+    <h:head>
+        <ui:include src="templates/head_config.xhtml" />
+        <style>
+            .content:before {
+                content: "";
+                position: fixed;
+                left: 0;
+                right: 0;
+                z-index: -1;
+
+                display: block;
+                //background-image: url('http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_527bf56961712_1.JPG');
+                background-image: url('http://www.viajejet.com/wp-content/viajes/Mapa-Colombia.jpg');
+                width: 100%;
+                height: 100%;
+                background-size: 100% auto;
+
+                -webkit-filter: blur(5px);
+                -moz-filter: blur(5px);
+                -o-filter: blur(5px);
+                -ms-filter: blur(5px);
+                filter: blur(5px);
+            }
+
+            .content {
+                position: fixed;
+                left: 0;
+                right: 0;
+                z-index: 0;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+        </style>
     </h:head>
+
     <h:body>
-        <h:form id="form">
-            <p:panel id="panel" header="Registro de usuario" toggleable="true" toggleOrientation="horizontal">
-                <h:panelGrid columns="2" cellpadding="10">
-                    <p:outputLabel value="Nombre de usuario" />
-                    <p:inputText value="#{MbUsuario.usuario.nombreUsuario}" />
-                    <p:outputLabel value="Telefono" />
-                    <p:inputText value="#{MbUsuario.usuario.telefono}" />
-                    <p:outputLabel value="Email" />
-                    <p:inputText value="#{MbUsuario.usuario.email}" />
-                    <p:outputLabel value="Clave" />
-                    <p:password  value="#{MbUsuario.clave1}" />
-                    <p:outputLabel value="Clave de confirmacion" />
-                    <p:password  value="#{MbUsuario.clave2}" />
-                </h:panelGrid>
-            </p:panel>  
-            <p:commandButton value="Registrar"  update=":form" actionListener="#{MbUsuario.accionGuarda()}" styleClass="ui-priority-primary" />
-        </h:form>
+        <div class="container content">
+            <div class="background-image">
+                <div class="row">
+                    <div style="width: 35%" class="col-md-8 col-md-offset-8">
+                        <div class="login-panel panel panel-default ">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Autenticacion de Usuario</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h:form role="form" id="form">
+                                    <p:growl id="growl" showDetail="true" />
+                                    <h:panelGrid columns="2" cellpadding="10">
+                                        <p:outputLabel style="width: 100%" value="Nombre de usuario" />
+                                        <p:inputText style="width: 100%" value="#{MbLogin.nombreDeUsuaio}" />
+                                        <p:outputLabel style="width: 100%" value="Clave" />
+                                        <p:password style="width: 100%"  value="#{MbLogin.password}" />
+                                    </h:panelGrid>
+                                    <br/>
+                                    <p:commandButton style="float: right" value="Entra"  update=":form" actionListener="#{MbLogin.accionLogin()}" styleClass="ui-priority-primary" />
+                                </h:form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div style="position:absolute;top:250px;right:260px;" class="row">
+                    <div style="width: 95%"  class="col-md-8 col-md-offset-8">
+                        <div class="login-panel panel panel-default ">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Registro de Usuario</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h:form role="form2" id="form2">
+                                    <p:growl id="growl" showDetail="true" />
+                                    <h:panelGrid columns="2" cellpadding="10">
+                                        <p:outputLabel style="width: 100%" value="Nombre de usuario" />
+                                        <p:inputText style="width: 100%" value="#{MbUsuario.usuario.nombreUsuario}" />
+                                        <p:outputLabel style="width: 100%" value="Telefono" />
+                                        <p:inputText style="width: 100%" value="#{MbUsuario.usuario.telefono}" />
+                                        <p:outputLabel style="width: 100%" value="Email" />
+                                        <p:inputText style="width: 100%" value="#{MbUsuario.usuario.email}" />
+                                        <p:outputLabel style="width: 100%" value="Clave" />
+                                        <p:password style="width: 100%" value="#{MbUsuario.clave1}" />
+                                        <p:outputLabel style="width: 100%" value="Clave de confirmacion" />
+                                        <p:password style="width: 100%" value="#{MbUsuario.clave2}" />
+                                    </h:panelGrid>                   
+                                    <br/>
+                                    <p:commandButton style="float: right" value="Registrar"  update=":form2" actionListener="#{MbUsuario.accionGuarda()}" styleClass="ui-priority-primary" />                                   
+                                </h:form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="/sipnat/bower_components/jquery/dist/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="/sipnat/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="/sipnat/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="/sipnat/dist/js/sb-admin-2.js"></script>
+
     </h:body>
+
 </html>
