@@ -54,7 +54,7 @@
                                                           cancelLabel="Cancelar" uploadLabel="Subir Archivos"/>
                                         </div>
                                         <div class="col-lg-8">
-                                            <p:graphicImage id="graf" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" url="http://localhost:8080/sipnat/imagenServlet?id=#{MbTipoDeSensor.tipoSensor.uuid}" style="width: 50%; height:10%" /> 
+                                            <p:graphicImage id="graf" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" url="http://localhost:8080/sipnat/imagenServlet?id=#{MbTipoDeSensor.tipoSensor.uuid}" style="width: 32px; height:32px" /> 
                                             <p:commandLink id="icon" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" action="#{MbTipoDeSensor.bajarIcono()}" update="panel">
                                                 <span class="glyphicon glyphicon-remove"></span>
                                             </p:commandLink>
@@ -83,7 +83,7 @@
                                                     <p:outputLabel  value="#{row.unidadDeMedida}" />
                                                 </p:column>
                                                 <p:column headerText="Icono" >
-                                                    <p:graphicImage  url="http://localhost:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 50%; height:10%" /> 
+                                                    <p:graphicImage  url="http://localhost:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 32px; height:32px" /> 
                                                 </p:column>
                                                 <p:column style="width: 50px" >
                                                     <p:commandLink  action="#{MbTipoDeSensor.cargaTipoDeSensor(row)}" update=":form">

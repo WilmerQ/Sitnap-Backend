@@ -23,6 +23,8 @@ public class TipoSensor extends CamposComunesdeEntidad implements Serializable {
     private byte[] logoDelTipo;
     @Transient
     private String uuid;
+    @Transient
+    private Boolean selecionado;
 
     public String getNombre() {
         return nombre;
@@ -55,4 +57,14 @@ public class TipoSensor extends CamposComunesdeEntidad implements Serializable {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    public Boolean getSelecionado() {
+        return selecionado;
+    }
+
+    public void setSelecionado(Boolean selecionado) {
+        this.selecionado = selecionado;
+    }
+    
+    
 }
