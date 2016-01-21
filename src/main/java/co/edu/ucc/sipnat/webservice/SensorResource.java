@@ -9,6 +9,7 @@ import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Auditoria;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -112,8 +113,8 @@ public class SensorResource {
      */
     @GET
     @Produces("application/json")
-    @Path("/{codigo}/{dato}")
-    public String obtenerDato(@PathParam("codigo") String codigo, @PathParam("dato") String dato) throws Exception {
+    @Path("/{codigo}/{dato}/{fechaRecoleccion}")
+    public String obtenerDato(@PathParam("codigo") String codigo, @PathParam("dato") String dato, @PathParam("fechaRecoleccion") String fechaRecoleccion) throws Exception {
         Auditoria auditoria;
         if (codigo.trim().length() == 0) {
             auditoria = new Auditoria();
@@ -133,9 +134,10 @@ public class SensorResource {
                 return "1"; //codigo de sensor erroneo
             } else {
                 if (sensor.getEstadoDelSensor().equals("Conectado")) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                     DatosSensor ds = new DatosSensor();
                     ds.setDato(dato);
-                    //ds.setFechaRecoleccion(fechaRecoleccion);
+                    ds.setFechaRecoleccion(formatter.parse(fechaRecoleccion));
                     ds.setFechaSincronizacion(new Date());
                     ds.setSensor(sensor);
                     if (cb.guardar(ds)) {
