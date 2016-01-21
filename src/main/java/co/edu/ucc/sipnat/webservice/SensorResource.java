@@ -105,17 +105,17 @@ public class SensorResource {
      * Retrieves representation of an instance of
      * co.edu.ucc.sipnat.base.SensorResource
      *
-     * @param codigoSensor
+     * @param codigo
      * @param dato
      * @param fechaRecoleccion
      * @return an instance of java.lang.String
      */
     @GET
     @Produces("application/json")
-    @Path("/{codigoSensor}/{dato}/{fechaRecoleccion}")
-    public String obtenerDato(@PathParam("codigoSensor") String codigoSensor, @PathParam("dato") String dato, @PathParam("fechaRecoleccion") Date fechaRecoleccion) throws Exception {
+    @Path("/{codigo}/{dato}")
+    public String obtenerDato(@PathParam("codigo") String codigo, @PathParam("dato") String dato) throws Exception {
         Auditoria auditoria;
-        if (codigoSensor.trim().length() == 0) {
+        if (codigo.trim().length() == 0) {
             auditoria = new Auditoria();
             auditoria.setMetodo("Obteniendo dato");
             auditoria.setCausaDelError("Codigo de sensor vacio");
@@ -123,11 +123,11 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigoSensor));
+            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigo));
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("Obteniendo dato");
-                auditoria.setCausaDelError("codigo de sensor erroneo: "+codigoSensor);
+                auditoria.setCausaDelError("codigo de sensor erroneo: "+codigo);
                 auditoria.setFechaYHoraDelaCausa(new Date());
                 cb.guardar(auditoria);
                 return "1"; //codigo de sensor erroneo
@@ -135,7 +135,7 @@ public class SensorResource {
                 if (sensor.getEstadoDelSensor().equals("Conectado")) {
                     DatosSensor ds = new DatosSensor();
                     ds.setDato(dato);
-                    ds.setFechaRecoleccion(fechaRecoleccion);
+                    //ds.setFechaRecoleccion(fechaRecoleccion);
                     ds.setFechaSincronizacion(new Date());
                     ds.setSensor(sensor);
                     if (cb.guardar(ds)) {
@@ -143,7 +143,7 @@ public class SensorResource {
                     } else {
                         auditoria = new Auditoria();
                         auditoria.setMetodo("Obteniendo dato");
-                        auditoria.setCausaDelError("Error en el ejb, codigo de sensor "+ codigoSensor);
+                        auditoria.setCausaDelError("Error en el ejb, codigo de sensor "+ codigo);
                         auditoria.setFechaYHoraDelaCausa(new Date());
                         cb.guardar(auditoria);
                         return "1";//Error en el ejb
@@ -151,7 +151,7 @@ public class SensorResource {
                 } else {
                     auditoria = new Auditoria();
                     auditoria.setMetodo("Obteniendo dato");
-                    auditoria.setCausaDelError("Codigo erroneo: "+codigoSensor);
+                    auditoria.setCausaDelError("Codigo erroneo: "+codigo);
                     auditoria.setFechaYHoraDelaCausa(new Date());
                     cb.guardar(auditoria);
                     return "1";//Sensor no conectado
