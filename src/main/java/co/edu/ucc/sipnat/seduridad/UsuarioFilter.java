@@ -57,7 +57,7 @@ public class UsuarioFilter implements Filter {
         } else {
             req.getSession().setAttribute("NO_AUTORIZADO", Boolean.TRUE);
             HttpServletResponse res = (HttpServletResponse) response;
-            res.sendRedirect(req.getContextPath() + "/forbiden.xhtml");
+            res.sendRedirect(req.getContextPath() + "/index.xhtml");
         }
     }
 
