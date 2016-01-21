@@ -101,9 +101,11 @@ public class CamposComunesdeEntidad implements Serializable {
         if (estado == null) {
             estado = Boolean.TRUE;
         }
-        Usuario u = (Usuario) SessionOperations.getSessionValue("USUARIO");
-        if (u != null) {
+        try {
+            Usuario u = (Usuario) SessionOperations.getSessionValue("USUARIO");
             usuarioCreacion = u.getNombreUsuario();
+        } catch (Exception e) {
+            usuarioCreacion = "Sistema";
         }
     }
 

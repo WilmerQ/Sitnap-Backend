@@ -62,11 +62,11 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            Sensor sensor = (Sensor) cb.getByOneFieldWithOneResult(Sensor.class, "codigoHexadecimal", codigoSensor);
+            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigoSensor));
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("Dar de alta");
-                auditoria.setCausaDelError("Codigo erroneo");
+                auditoria.setCausaDelError("Codigo erroneo: "+codigoSensor);
                 auditoria.setFechaYHoraDelaCausa(new Date());
                 cb.guardar(auditoria);
                 return "1"; //codigo de sensor erroneo
@@ -74,19 +74,26 @@ public class SensorResource {
                 if (!sensor.getEstadoDelSensor().equals("Conectado")) {
                     sensor.setEstadoDelSensor("Conectado");
                     if (cb.guardar(sensor)) {
+                        auditoria = new Auditoria();
+                        auditoria.setMetodo("Dar de alta");
+                        auditoria.setCausaDelError("Correcto "+sensor.getId());
+                        auditoria.setFechaYHoraDelaCausa(new Date());
+                        cb.guardar(auditoria);
                         return "2";//correto
                     } else {
                         auditoria = new Auditoria();
                         auditoria.setMetodo("Dar de alta");
-                        auditoria.setCausaDelError("Error interno en el ejb");
+                        auditoria.setCausaDelError("Error interno en el ejb, codigo de sensor "+codigoSensor);
                         auditoria.setFechaYHoraDelaCausa(new Date());
+                        cb.guardar(auditoria);
                         return "1";//Error en el ejb
                     }
                 } else {
                     auditoria = new Auditoria();
                     auditoria.setMetodo("Dar de alta");
-                    auditoria.setCausaDelError("ya esta conectado verifique codigo enviado");
+                    auditoria.setCausaDelError("ya esta conectado verifique codigo enviado, Codigo sensor " +codigoSensor);
                     auditoria.setFechaYHoraDelaCausa(new Date());
+                    cb.guardar(auditoria);
                     return "1";//ya esta conectado verifique codigo enviado
                 }
             }
@@ -116,11 +123,11 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            Sensor sensor = (Sensor) cb.getByOneFieldWithOneResult(Sensor.class, "codigoHexadecimal", codigoSensor);
+            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigoSensor));
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("Obteniendo dato");
-                auditoria.setCausaDelError("codigo de sensor erroneo");
+                auditoria.setCausaDelError("codigo de sensor erroneo: "+codigoSensor);
                 auditoria.setFechaYHoraDelaCausa(new Date());
                 cb.guardar(auditoria);
                 return "1"; //codigo de sensor erroneo
@@ -136,7 +143,7 @@ public class SensorResource {
                     } else {
                         auditoria = new Auditoria();
                         auditoria.setMetodo("Obteniendo dato");
-                        auditoria.setCausaDelError("Error en el ejb");
+                        auditoria.setCausaDelError("Error en el ejb, codigo de sensor "+ codigoSensor);
                         auditoria.setFechaYHoraDelaCausa(new Date());
                         cb.guardar(auditoria);
                         return "1";//Error en el ejb
@@ -144,7 +151,7 @@ public class SensorResource {
                 } else {
                     auditoria = new Auditoria();
                     auditoria.setMetodo("Obteniendo dato");
-                    auditoria.setCausaDelError("Codigo erroneo");
+                    auditoria.setCausaDelError("Codigo erroneo: "+codigoSensor);
                     auditoria.setFechaYHoraDelaCausa(new Date());
                     cb.guardar(auditoria);
                     return "1";//Sensor no conectado

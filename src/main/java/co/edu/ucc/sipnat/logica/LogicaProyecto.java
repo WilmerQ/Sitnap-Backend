@@ -36,6 +36,7 @@ public class LogicaProyecto {
                 for (Sensor s : sensores) {
                     if (s.getId() == null) {
                         s.setProyectoPadre(proyecto);
+                        s.setEstadoDelSensor("Creado");
                         if (cb.guardar(s)) {
                             ProyectoXSensor pxs = buscarRelacion(proyecto, s);
                             if (pxs == null) {
