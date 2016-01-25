@@ -45,6 +45,8 @@ public class MbSensor implements Serializable {
     private MapModel draggableModel;
     private Marker marker;
     private Long idTipoSensor;
+    private Long idSensor;
+    private Boolean sensorCargado;
 
     @EJB
     private CommonsBean cb;
@@ -66,11 +68,15 @@ public class MbSensor implements Serializable {
         draggableModel = new DefaultMapModel();
         latitud = "";
         longitud = "";
-        idTipoSensor =  null;
+        idTipoSensor = null;
+        sensorCargado = Boolean.FALSE;
+        idSensor = null;
     }
 
     public void cargaSensor(Sensor row) {
+        sensorCargado = Boolean.TRUE;
         this.sensor = row;
+        idSensor = row.getId();
         latitud = row.getLatitud();
         longitud = row.getLongitud();
         idTipoSensor = row.getTipoSensor().getId();
@@ -80,6 +86,23 @@ public class MbSensor implements Serializable {
         draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://localhost:8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
         for (Marker premarker : draggableModel.getMarkers()) {
             premarker.setDraggable(true);
+        }
+    }
+
+    public void accionBuscarSensor() {
+        if (idSensor == null) {
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Ingrese el codigo del sensor");
+        } else {
+            Sensor s = (Sensor) cb.getById(Sensor.class, idSensor);
+            if (s != null) {
+                if (s.getUsuarioCreacion().equals(usuario.getNombreUsuario())) {
+                    cargaSensor(s);
+                }else{
+                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Error no se puede editar este sensor, tiene que ser el usuario que lo creo");
+                }
+            } else {
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Codigo de sensor no existe");
+            }
         }
     }
 
@@ -190,4 +213,20 @@ public class MbSensor implements Serializable {
     public void setIdTipoSensor(Long idTipoSensor) {
         this.idTipoSensor = idTipoSensor;
     }
+
+    public Long getIdSensor() {
+        return idSensor;
+    }
+
+    public void setIdSensor(Long idSensor) {
+        this.idSensor = idSensor;
+    }    
+
+    public Boolean getSensorCargado() {
+        return sensorCargado;
+    }
+
+    public void setSensorCargado(Boolean sensorCargado) {
+        this.sensorCargado = sensorCargado;
+    }    
 }

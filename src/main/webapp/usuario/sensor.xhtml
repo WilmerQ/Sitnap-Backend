@@ -31,6 +31,16 @@
                                     <div class="panel-heading">Datos del Sensor</div>
                                     <div class="panel-body">
                                         <div class="col-md-12">  
+                                            <label class="col-lg-4 control-label">Codigo</label>
+                                            <div class="col-lg-4">
+                                                <p:inputText disabled="#{MbSensor.sensorCargado}" styleClass="form-control" placeholder="" value="#{MbSensor.idSensor}" />
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <p:commandButton rendered="#{!MbSensor.sensorCargado}" value="Busca" action="#{MbSensor.accionBuscarSensor()}" update=":form"/>
+                                                <p:commandButton rendered="#{MbSensor.sensorCargado}" value="Limpiar" action="#{MbSensor.init()}" update=":form"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
                                             <label class="col-lg-4 control-label">Tipo Sensor</label>
                                             <div class="col-lg-8">
                                                 <p:selectOneMenu   filter="true"  filterMatchMode="contains"  value="#{MbSensor.idTipoSensor}" style="width: 100%"  panelStyleClass="combo">
@@ -38,11 +48,7 @@
                                                     <f:selectItems value="#{MbSensor.tipoSensorItem}"/>     
                                                     <p:ajax event="change" listener="#{MbSensor.updateIcon()}"  update="form" />
                                                 </p:selectOneMenu>
-                                            </div>
-                                            <label class="col-lg-4 control-label">Codigo</label>
-                                            <div class="col-lg-8">
-                                                <p:inputText disabled="true" styleClass="form-control" placeholder="" value="#{MbSensor.sensor.id}" />
-                                            </div>
+                                            </div>                                         
                                             <label class="col-lg-3 control-label">Latitud</label>
                                             <div class="col-lg-3">
                                                 <p:inputText styleClass="form-control" placeholder="Latitud" value="#{MbSensor.latitud}" />

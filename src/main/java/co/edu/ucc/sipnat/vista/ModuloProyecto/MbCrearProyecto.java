@@ -11,9 +11,13 @@ import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
+import com.ibcaribe.i4w.base.SessionOperations;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -64,6 +68,15 @@ public class MbCrearProyecto implements Serializable {
         tipoSensores = cb.getAll(TipoSensor.class);
         latitud = "";
         longitud = "";
+        draggableModel = new DefaultMapModel();
+        if (SessionOperations.getSessionValue("PROYECTO") != null) {
+            proyecto = (Proyecto) SessionOperations.getSessionValue("PROYECTO");
+            List<ProyectoXSensor> pxses = cb.getByOneField(ProyectoXSensor.class, "proyecto", proyecto);
+            for (ProyectoXSensor pxs : pxses) {
+                sensores.add(pxs.getSensor());
+            }
+            SessionOperations.setSessionValue("PROYECTO", null);
+        }
     }
 
     public void selecionarTipo(TipoSensor row) {
@@ -173,7 +186,8 @@ public class MbCrearProyecto implements Serializable {
             if (verificarFormulario()) {
                 if (lp.guardaProyecto(sensores, proyecto)) {
                     mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se ha guardado");
-                    init();
+                    SessionOperations.setSessionValue("PROYECTO", proyecto);
+                    redirect("verproyecto.xhtml");
                 } else {
                     mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "No se ha guarado");
                 }
@@ -182,6 +196,15 @@ public class MbCrearProyecto implements Serializable {
             e.printStackTrace();
         }
 
+    }
+
+    private void redirect(String url) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            context.getExternalContext().redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(MbVerProyecto.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Boolean verificarFormulario() {

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <ui:include src="/templates/head_config.xhtml" />
+        <script src="http://maps.google.com/maps/api/js?sensor=false" 
+        type="text/javascript"></script>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <div id="wrapper">
+                <!-- Navigation -->
+                <ui:include src="/templates/navigation.xhtml" />
+
+                <div id="page-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="page-header">proyecto</h1>
+                        </div>
+                        <!-- /.col-lg-12 -->
+                    </div>
+                    <!-- /.row -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Datos del Proyecto</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">  
+                                            <label class="col-lg-4 control-label">Codigo</label>
+                                             <div class="col-lg-4">
+                                                 <p:inputText disabled="#{MbVerProyecto.proyecto.id != null}" styleClass="form-control" placeholder="" value="#{MbVerProyecto.idProyecto}" />
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <p:commandButton rendered="#{MbVerProyecto.proyecto.id == null}" value="Busca" action="#{MbVerProyecto.buscarProyecto()}" update=":form"/>
+                                                <p:commandButton rendered="#{MbVerProyecto.proyecto.id != null}" value="Limpiar" action="#{MbVerProyecto.init()}" update=":form"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">  
+                                            <label class="col-lg-4 control-label">Nombre</label>
+                                            <div class="col-lg-8">
+                                                <h:outputText value="#{MbVerProyecto.proyecto.nombre}" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">  
+                                            <label class="col-lg-4 control-label">Descriccion</label>
+                                            <div class="col-lg-8">
+                                                <h:outputText value="#{MbVerProyecto.proyecto.descripcion}" />
+                                            </div> 
+                                        </div>
+                                        <div style="float: right">
+                                            <p:commandButton rendered="#{MbVerProyecto.proyecto.id !=null}" value="Editar" action="#{MbVerProyecto.editarProyecto()}" update=":form"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="col-lg-6 col-md-6">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Proyecto creado</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">  
+                                            <p:dataTable  var="row" value="#{MbVerProyecto.proyectos}" paginator="true" rows="5" paginatorPosition="bottom">
+                                                <p:column headerText="Codigo" style="width: 22%">
+                                                    <h:outputText value="#{row.id}" />                                              
+                                                </p:column>
+                                                <p:column headerText="Nombre" style="width: 22%">
+                                                    <h:outputText  value="#{row.nombre}" />
+                                                </p:column>
+                                                <p:column headerText="Descripcion" style="width: 22%">
+                                                    <h:outputText  value="#{row.descripcion}" />
+                                                </p:column>
+                                                <p:column headerText="Usuario" style="width: 22%">
+                                                    <h:outputText  value="#{row.usuarioCreacion}" />
+                                                </p:column>
+                                                <p:column  style="width: 8%">
+                                                    <p:commandLink  action="#{MbVerProyecto.cargaProyecto(row)}" update=":form">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <p:dialog header="Sensor" widgetVar="dlgSensor" minHeight="40" visible="#{MbVerProyecto.mostarPopupDeGrafica}" modal="true" closable="false">
+                            <div class="col-md-12">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i>
+                                </div>
+                                <div class="panel-body">
+                                    <p:chart rendered="#{MbVerProyecto.mostarPopupDeGrafica}" responsive="true" type="line" model="#{MbVerProyecto.dataModelSensor}" style="height:300px; width: 600px"/> 
+                                </div>
+                            </div>
+                            <div style="float: right">
+                                <p:commandButton  value="Cerrar" action="#{MbVerProyecto.ocultarPopup()}" update=":form"/>
+                            </div>             
+                        </p:dialog>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Mapa</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">  
+                                            <p:gmap id="gmap" center="11.247141, -74.205504" zoom="14" type="ROADMAP"  model="#{MbVerProyecto.draggableModel}" style="width:100%;height:375px">
+                                                <p:ajax event="overlaySelect" listener="#{MbVerProyecto.onMarkerSelect}"  update=":form"  />                                                
+                                            </p:gmap>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Grafica general</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">  
+                                            <div class="col-md-12">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-bar-chart-o fa-fw"></i>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <p:chart rendered="#{MbVerProyecto.mostrarGraficaGeneral}" responsive="true" type="line" model="#{MbVerProyecto.dataModelSensores}"/> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /#page-wrapper -->
+            </div>
+            <!-- /#wrapper -->
+            <ui:include src="/templates/footer.xhtml" />
+        </h:form>
+    </h:body>
+</html>
