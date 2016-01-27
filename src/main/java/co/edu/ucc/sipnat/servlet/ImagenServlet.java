@@ -29,6 +29,7 @@ public class ImagenServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idDeImagen = request.getParameter("id");
+        System.out.println("+++++++++"+idDeImagen);
         try {
             Long l = new Long(idDeImagen);
             TipoSensor ts = (TipoSensor) cb.getById(TipoSensor.class, l);
