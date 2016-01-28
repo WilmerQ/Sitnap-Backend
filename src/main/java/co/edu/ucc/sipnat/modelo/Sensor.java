@@ -23,7 +23,7 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     private TipoSensor tipoSensor;
     @ManyToOne
     private Proyecto proyectoPadre;
-
+     
     public String getCodigoHexadecimal() {
         return codigoHexadecimal;
     }

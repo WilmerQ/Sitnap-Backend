@@ -29,6 +29,7 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(co.edu.ucc.sipnat.webservice.DatoResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.ProyectoResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.SensorMovilResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.SensorResource.class);

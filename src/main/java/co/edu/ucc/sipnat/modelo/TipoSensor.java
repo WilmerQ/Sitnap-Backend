@@ -26,6 +26,15 @@ public class TipoSensor extends CamposComunesdeEntidad implements Serializable {
     @Transient
     private Boolean selecionado;
 
+    public TipoSensor(TipoSensor ts) {
+        this.nombre = ts.getNombre();
+        this.unidadDeMedida = ts.getUnidadDeMedida();
+        this.setId(ts.getId());
+    }
+
+    public TipoSensor() {
+    }
+
     public String getNombre() {
         return nombre;
     }

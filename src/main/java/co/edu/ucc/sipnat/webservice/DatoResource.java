@@ -6,8 +6,9 @@
 package co.edu.ucc.sipnat.webservice;
 
 import co.edu.ucc.sipnat.base.GsonExcludeListStrategy;
+import co.edu.ucc.sipnat.clases.Dato;
 import co.edu.ucc.sipnat.logica.CommonsBean;
-import co.edu.ucc.sipnat.modelo.Proyecto;
+import co.edu.ucc.sipnat.modelo.DatosSensor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
@@ -28,9 +29,9 @@ import javax.ws.rs.Produces;
  *
  * @author Windows 8.1
  */
-@Path("Proyecto")
+@Path("dato")
 @Stateless
-public class ProyectoResource {
+public class DatoResource {
 
     @Context
     private UriInfo context;
@@ -39,51 +40,33 @@ public class ProyectoResource {
     private CommonsBean cb;
 
     /**
-     * Creates a new instance of ProyectoResource
+     * Creates a new instance of DatoResource
      */
-    public ProyectoResource() {
+    public DatoResource() {
     }
 
     /**
      * Retrieves representation of an instance of
-     * co.edu.ucc.sipnat.webservice.ProyectoResource
+     * co.edu.ucc.sipnat.webservice.DatoResource
      *
+     * @param id
      * @return an instance of java.lang.String
      */
     @GET
     @Produces("application/json")
-    public String getJson() {
-        List<Proyecto> proyectos = cb.getAll(Proyecto.class);
-        List<co.edu.ucc.sipnat.clases.Proyecto> list = new ArrayList<>();
-        for (Proyecto proyecto : proyectos) {
-            list.add(new co.edu.ucc.sipnat.clases.Proyecto(proyecto));
-        }
-        Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
-        return g.toJson(list);
-    }
-
-    @GET
-    @Produces("application/json")
     @Path("/{id}")
-    public String getProyectoXUsuario(@PathParam("id") String id) {
-        List<Proyecto> p = cb.getByOneField(Proyecto.class, "usuarioCreacion", id);
-        List<Long> idP = new ArrayList<>();
-        List<co.edu.ucc.sipnat.clases.Proyecto> listp = new ArrayList<>();
-        for (Proyecto pr : p) {
-           listp.add(new co.edu.ucc.sipnat.clases.Proyecto(pr));    
-           idP.add(pr.getId());
-        }
-        List<Proyecto> list = cb.getNotIn(Proyecto.class, "id", idP);
-        for (Proyecto list1 : list) {
-            listp.add(new co.edu.ucc.sipnat.clases.Proyecto(list1));    
-            p.add(list1);
+    public String getJson(@PathParam("id") String id) {
+        List<DatosSensor> dses = cb.getByOneField(DatosSensor.class, "sensor.id", new Long(id));
+        List<Dato> datos = new ArrayList<>();
+        for (DatosSensor ds : dses) {
+            datos.add(new Dato(ds));
         }
         Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
-        return g.toJson(listp);
+        return g.toJson(datos);
     }
 
     /**
-     * PUT method for updating or creating an instance of ProyectoResource
+     * PUT method for updating or creating an instance of DatoResource
      *
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.

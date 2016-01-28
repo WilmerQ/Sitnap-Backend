@@ -10,6 +10,7 @@ import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
+import co.edu.ucc.sipnat.modelo.TipoSensor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ibcaribe.procc.services.FieldtoQuery;
@@ -57,11 +58,13 @@ public class SensorMovilResource {
     @Produces("application/json")
     public String getJson() {
         List<Sensor> sensores = cb.getByOneField(Sensor.class, "estadoDelSensor", "Conectado");
+        List<co.edu.ucc.sipnat.clases.Sensor> listSensores = new ArrayList<>();
         for (Sensor sensore : sensores) {
-            sensore.getTipoSensor().setLogoDelTipo(null);
+            co.edu.ucc.sipnat.clases.Sensor s = new co.edu.ucc.sipnat.clases.Sensor(sensore);
+            listSensores.add(s);
         }
         Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
-        return g.toJson(sensores);
+        return g.toJson(listSensores);
     }
 
     @GET
@@ -73,14 +76,16 @@ public class SensorMovilResource {
         fqs.add(new FieldtoQuery("proyecto", p));
         fqs.add(new FieldtoQuery("sensor.estadoDelSensor", "Conectado"));
         List<ProyectoXSensor> list = cb.getByManyFields(ProyectoXSensor.class, fqs);
+        List<co.edu.ucc.sipnat.clases.Sensor> listSensores = new ArrayList<>();
         List<Sensor> sensores = new ArrayList<>();
         for (ProyectoXSensor list1 : list) {
-            Sensor s = list1.getSensor();
-            s.getTipoSensor().setLogoDelTipo(null);
-            sensores.add(s);
+            Sensor s1 = list1.getSensor();
+            co.edu.ucc.sipnat.clases.Sensor s = new co.edu.ucc.sipnat.clases.Sensor(s1);
+            listSensores.add(s);
+            
         }
         Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
-        return g.toJson(sensores);
+        return g.toJson(listSensores);
     }
 
     /**
