@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <ui:include src="/templates/head_config.xhtml" />
+        <script src="http://maps.google.com/maps/api/js?sensor=false" 
+        type="text/javascript"></script>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <div id="wrapper">
+                <!-- Navigation -->
+                <ui:include src="/templates/navigation.xhtml" />
+
+                <div id="page-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="page-header">REPORTES</h1>
+                        </div>
+                        <!-- /.col-lg-12 -->
+                    </div>
+                    <!-- /.row -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Opciones</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12"> 
+                                            <h3>Historico</h3>
+                                            <ul>
+                                                <li>
+                                                    <p:commandLink value="Auditoria" update="params"
+                                                                   action="#{MbReportes.cargaFormulario('auditoria')}" />
+                                                </li>
+                                                <li>
+                                                    <p:commandLink value="Sensor" update="params"
+                                                                   action="#{MbReportes.cargaFormulario('sensor')}" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Datos</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12"> 
+                                            <h:panelGroup id="params">
+                                                <h:panelGroup rendered="#{MbReportes.auditoria}">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-5 control-label">Fecha Inicial</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechainicio}" locale="es" />
+                                                        </div>
+                                                        <label class="col-lg-5 control-label">Fecha Final</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechafinal}" locale="es" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <p:commandButton value="Generar" action="#{MbReportes.cargaAuditoria()}"
+                                                                         styleClass="btn btn-primary" style="float: right" id="btnAufitoria" update=":form" />
+                                                    </div>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{MbReportes.sensor}">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-5 control-label">Codigo del sensor</label>
+                                                        <div class="col-lg-7">
+                                                            <p:inputText styleClass="form-control" placeholder="Codigo" value="#{MbReportes.idSensor}" />
+                                                        </div>
+                                                        <label class="col-lg-5 control-label">Fecha Inicial</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechainicio}" locale="es" />
+                                                        </div>
+                                                        <label class="col-lg-5 control-label">Fecha Final</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechafinal}" locale="es" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <p:commandButton value="Generar" action="#{MbReportes.cargaDatoSensor()}"
+                                                                         styleClass="btn btn-primary" style="float: right" id="btnSensor" update=":form" />
+                                                    </div>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /#page-wrapper -->
+            </div>
+            <!-- /#wrapper -->
+            <ui:include src="/templates/footer.xhtml" />
+        </h:form>
+    </h:body>
+</html>

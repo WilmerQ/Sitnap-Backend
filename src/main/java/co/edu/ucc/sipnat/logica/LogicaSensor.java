@@ -6,6 +6,8 @@
 package co.edu.ucc.sipnat.logica;
 
 import co.edu.ucc.sipnat.modelo.DatosSensor;
+import co.edu.ucc.sipnat.modelo.Sensor;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -30,4 +32,8 @@ public class LogicaSensor {
     public List<DatosSensor> obtenerDatos(Long id){
         return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor.id =:s ORDER BY d.fechaCreacion DESC").setParameter("s", id).getResultList();
     }
+    public List<DatosSensor> obtenerDatos(Sensor s, Date fi, Date ff){    
+        return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor =:s AND (d.fechaRecoleccion BETWEEN :fi AND :ff ) ORDER BY d.fechaRecoleccion ASC").setParameter("s", s).setParameter("fi", fi).setParameter("ff", ff).getResultList();
+    }
+    
 }
