@@ -25,6 +25,7 @@ public class LogicaAuditoria {
     private EntityManager em;
 
     public List<Auditoria> auditoriaPorFecha(Date fechai, Date fechaf) {
+        System.out.println("Consultado auditoria");
         return em.createQuery("SELECT a FROM Auditoria a WHERE a.fechaCreacion BETWEEN :fi AND :ff").setParameter("fi", fechai).setParameter("ff", fechaf).getResultList();
     }
 }
