@@ -7,7 +7,6 @@ package co.edu.ucc.sipnat.webservice;
 
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Usuario;
-import static com.google.common.hash.Hashing.md5;
 import com.ibcaribe.procc.services.Md5;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,9 +24,9 @@ import javax.ws.rs.Produces;
  *
  * @author Windows 8.1
  */
-@Path("CambioContra")
+@Path("CambioEmail")
 @Stateless
-public class CambioContraResource {
+public class CambioEmailResource {
 
     @Context
     private UriInfo context;
@@ -36,14 +35,14 @@ public class CambioContraResource {
     private CommonsBean cb;
 
     /**
-     * Creates a new instance of CambioContraResource
+     * Creates a new instance of CambioEmailResource
      */
-    public CambioContraResource() {
+    public CambioEmailResource() {
     }
 
     /**
      * Retrieves representation of an instance of
-     * co.edu.ucc.sipnat.webservice.CambioContraResource
+     * co.edu.ucc.sipnat.webservice.CambioEmailResource
      *
      * @param id
      * @param clave
@@ -58,7 +57,7 @@ public class CambioContraResource {
         if (u == null) {
             return "fail";
         } else {
-            u.setClave(Md5.getEncoddedString(clave));
+            u.setEmail(clave);
             if (cb.guardar(u)) {
                 return "ok";
             } else {
@@ -68,13 +67,13 @@ public class CambioContraResource {
     }
 
     /**
-     * PUT method for updating or creating an instance of CambioContraResource
+     * PUT method for updating or creating an instance of CambioEmailResource
      *
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */
     @PUT
-    @Consumes("application/json")
-    public void putJson(String content) {
+    @Consumes("application/xml")
+    public void putXml(String content) {
     }
 }

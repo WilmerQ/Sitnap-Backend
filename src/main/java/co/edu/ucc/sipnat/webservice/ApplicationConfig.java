@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(co.edu.ucc.sipnat.webservice.CambioContraResource.class);
+        resources.add(co.edu.ucc.sipnat.webservice.CambioEmailResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.DatoResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.ProyectoResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.SensorMovilResource.class);
