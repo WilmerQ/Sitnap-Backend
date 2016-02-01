@@ -51,13 +51,14 @@ public class CambioEmailResource {
      */
     @GET
     @Produces("application/json")
-    @Path("/{id}/{clave}")
-    public String getJson(@PathParam("id") String id, @PathParam("clave") String clave) throws Exception {
+    @Path("/{id}/{email}/{telefono}")
+    public String getJson(@PathParam("id") String id, @PathParam("email") String email, @PathParam("telefono") String telefono) throws Exception {
         Usuario u = (Usuario) cb.getByOneFieldWithOneResult(Usuario.class, "nombreUsuario", id);
         if (u == null) {
             return "fail";
         } else {
-            u.setEmail(clave);
+            u.setEmail(email);
+            u.setTelefono(telefono);
             if (cb.guardar(u)) {
                 return "ok";
             } else {

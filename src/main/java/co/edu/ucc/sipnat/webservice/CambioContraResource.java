@@ -62,7 +62,7 @@ public class CambioContraResource {
             if (cb.guardar(u)) {
                 return "ok";
             } else {
-                return "fail";
+                return "fail";  
             }
         }
     }
