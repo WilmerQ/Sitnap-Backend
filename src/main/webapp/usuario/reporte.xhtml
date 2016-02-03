@@ -39,8 +39,19 @@
                                                                    action="#{MbReportes.cargaFormulario('auditoria')}" />
                                                 </li>
                                                 <li>
-                                                    <p:commandLink value="Sensor" update="params"
+                                                    <p:commandLink value="Datos del sensor" update="params"
                                                                    action="#{MbReportes.cargaFormulario('sensor')}" />
+                                                </li>
+                                                <li>
+                                                    <p:commandLink value="Datos del proyecto" update="params"
+                                                                   action="#{MbReportes.cargaFormulario('proyecto')}" />
+                                                </li>
+                                            </ul>
+                                            <h3>Datos Basico</h3>
+                                            <ul>
+                                                <li>
+                                                    <p:commandLink value="Proyecto" update="params"
+                                                                   action="#{MbReportes.cargaFormulario('sensores')}" />
                                                 </li>
                                             </ul>
                                         </div>
@@ -89,6 +100,44 @@
                                                     <div class="form-group">
                                                         <p:commandButton value="Generar" action="#{MbReportes.cargaDatoSensor()}"
                                                                          styleClass="btn btn-primary" style="float: right" id="btnSensor" update=":form" />
+                                                    </div>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{MbReportes.proyecto}">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label">Proyecto</label>
+                                                        <div class="col-lg-8">
+                                                            <p:selectOneMenu   filter="true"  filterMatchMode="contains"  value="#{MbReportes.idProye}" style="width: 100%"  panelStyleClass="combo">
+                                                                <f:selectItem itemLabel="Seleccione proyecto" itemValue="" noSelectionOption="true" />
+                                                                <f:selectItems value="#{MbReportes.proyectoItems}"/>   
+                                                            </p:selectOneMenu>
+                                                        </div>
+                                                        <label class="col-lg-5 control-label">Fecha Inicial</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechainicio}" locale="es" />
+                                                        </div>
+                                                        <label class="col-lg-5 control-label">Fecha Final</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechafinal}" locale="es" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <p:commandButton value="Generar" action="#{MbReportes.cargaDatoSensor()}"
+                                                                         styleClass="btn btn-primary" style="float: right" id="btndxp" update=":form" />
+                                                    </div>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{MbReportes.sensoresXProyecto}">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label">Proyecto</label>
+                                                        <div class="col-lg-8">
+                                                            <p:selectOneMenu   filter="true"  filterMatchMode="contains"  value="#{MbReportes.idProye}" style="width: 100%"  panelStyleClass="combo">
+                                                                <f:selectItem itemLabel="Seleccione proyecto" itemValue="" noSelectionOption="true" />
+                                                                <f:selectItems value="#{MbReportes.proyectoItems}"/>   
+                                                            </p:selectOneMenu>
+                                                        </div> 
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <p:commandButton value="Generar" action="#{MbReportes.cargaDatoSensor()}"
+                                                                         styleClass="btn btn-primary" style="float: right" id="btnpxs" update=":form" />
                                                     </div>
                                                 </h:panelGroup>
                                             </h:panelGroup>

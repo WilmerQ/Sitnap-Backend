@@ -14,6 +14,7 @@ public class Sensor {
     private Long id;
     private String latitud;
     private String longitud;
+    private String nombreTipoSensor;
     private Long idTipoSensor;
 
     public Sensor(co.edu.ucc.sipnat.modelo.Sensor s) {
@@ -21,6 +22,7 @@ public class Sensor {
         this.latitud = s.getLatitud();
         this.longitud = s.getLongitud();
         this.idTipoSensor = s.getTipoSensor().getId();
+        this.nombreTipoSensor = s.getTipoSensor().getNombre();
     }
 
     public Long getId() {
@@ -55,4 +57,11 @@ public class Sensor {
         this.idTipoSensor = idTipoSensor;
     }
 
+    public String getNombreTipoSensor() {
+        return nombreTipoSensor;
+    }
+
+    public void setNombreTipoSensor(String nombreTipoSensor) {
+        this.nombreTipoSensor = nombreTipoSensor;
+    }
 }

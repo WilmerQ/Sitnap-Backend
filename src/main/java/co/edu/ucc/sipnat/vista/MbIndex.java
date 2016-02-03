@@ -52,7 +52,7 @@ public class MbIndex implements Serializable {
 
     @EJB
     private CommonsBean cb;
-    
+
     @EJB
     private LogicaSensor ls;
 
@@ -82,7 +82,7 @@ public class MbIndex implements Serializable {
             }
         }
     }
-    
+
     public void onMarkerSelect(OverlaySelectEvent event) {
         marker = (Marker) event.getOverlay();
         List<DatosSensor> dses = ls.obtenerDatos(new Long(marker.getTitle()));
@@ -103,7 +103,7 @@ public class MbIndex implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "Sin datos");
         }
     }
-    
+
     public LineChartModel initLinearModel(List<DatosSensor> dses, String id) {
         LineChartModel model = new LineChartModel();
         LineChartSeries series1 = new LineChartSeries();
@@ -115,7 +115,11 @@ public class MbIndex implements Serializable {
         model.addSeries(series1);
         return model;
     }
-    
+
+    public void ocultarPopup() {
+        mostarPopupDeGrafica = Boolean.FALSE;
+    }
+
     public void mostrarMensaje(FacesMessage.Severity icono, String titulo, String mensaje) {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(null, new FacesMessage(icono, titulo, mensaje));

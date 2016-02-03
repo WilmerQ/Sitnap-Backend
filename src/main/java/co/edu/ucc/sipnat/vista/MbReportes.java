@@ -10,6 +10,7 @@ import co.edu.ucc.sipnat.logica.LogicaAuditoria;
 import co.edu.ucc.sipnat.logica.LogicaSensor;
 import co.edu.ucc.sipnat.modelo.Auditoria;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
+import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +28,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -45,11 +48,14 @@ public class MbReportes implements Serializable {
 
     private Long idSensor;
     private Long idProyecto;
+    private Long idProye;
     private Date fechainicio;
     private Date fechafinal;
     private Boolean proyecto;
     private Boolean sensor;
     private Boolean auditoria;
+    private Boolean sensoresXProyecto;
+    private List<SelectItem> proyectoItems;
 
     @EJB
     private CommonsBean cb;
@@ -73,11 +79,18 @@ public class MbReportes implements Serializable {
     public void init() {
         idProyecto = null;
         idSensor = null;
+        idProye = null;
         fechafinal = new Date();
         fechainicio = new Date();
         proyecto = Boolean.FALSE;
         sensor = Boolean.FALSE;
         auditoria = Boolean.FALSE;
+        sensoresXProyecto = Boolean.FALSE;
+        proyectoItems = new LinkedList<>();
+        List<Proyecto> proyectos = cb.getAll(Proyecto.class, "ORDER BY o.id");
+        for (Proyecto p : proyectos) {
+            proyectoItems.add(new SelectItem(p.getId(), p.getId() + " " + p.getNombre()));
+        }
     }
 
     public void cargaFormulario(String opcion) {
@@ -86,16 +99,25 @@ public class MbReportes implements Serializable {
                 proyecto = Boolean.TRUE;
                 sensor = Boolean.FALSE;
                 auditoria = Boolean.FALSE;
+                sensoresXProyecto = Boolean.FALSE;
                 break;
             case "sensor":
                 proyecto = Boolean.FALSE;
                 sensor = Boolean.TRUE;
                 auditoria = Boolean.FALSE;
+                sensoresXProyecto = Boolean.FALSE;
                 break;
             case "auditoria":
                 proyecto = Boolean.FALSE;
                 sensor = Boolean.FALSE;
                 auditoria = Boolean.TRUE;
+                sensoresXProyecto = Boolean.FALSE;
+                break;
+            case "sensores":
+                proyecto = Boolean.FALSE;
+                sensor = Boolean.FALSE;
+                auditoria = Boolean.FALSE;
+                sensoresXProyecto = Boolean.TRUE;
                 break;
         }
     }
@@ -302,5 +324,29 @@ public class MbReportes implements Serializable {
 
     public void setAuditoria(Boolean auditoria) {
         this.auditoria = auditoria;
+    }
+
+    public Boolean getSensoresXProyecto() {
+        return sensoresXProyecto;
+    }
+
+    public void setSensoresXProyecto(Boolean sensoresXProyecto) {
+        this.sensoresXProyecto = sensoresXProyecto;
+    }
+
+    public Long getIdProye() {
+        return idProye;
+    }
+
+    public void setIdProye(Long idProye) {
+        this.idProye = idProye;
+    }
+
+    public List<SelectItem> getProyectoItems() {
+        return proyectoItems;
+    }
+
+    public void setProyectoItems(List<SelectItem> proyectoItems) {
+        this.proyectoItems = proyectoItems;
     }
 }
