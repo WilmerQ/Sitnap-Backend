@@ -11,6 +11,7 @@ import co.edu.ucc.sipnat.logica.LogicaLogin;
 import co.edu.ucc.sipnat.modelo.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ibcaribe.procc.services.Md5;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -41,7 +42,7 @@ public class UsuarioResource {
 
     @EJB
     private CommonsBean cb;
-    
+
     /**
      * Creates a new instance of UsuarioResource
      */
@@ -76,6 +77,36 @@ public class UsuarioResource {
         } else {
             usuario.setInformeDeError(2);
             return g.toJson(usuario);
+        }
+    }
+
+    /**
+     *
+     * @param id
+     * @param clave
+     * @param email
+     * @param telefono
+     * @return
+     * @throws java.lang.Exception
+     */
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/{clave}/{email}/{telefono}")
+    public String getNewUsuario(@PathParam("id") String id, @PathParam("clave") String clave, @PathParam("email") String email, @PathParam("telefono") String telefono) throws Exception {
+        Usuario u = (Usuario) cb.getByOneFieldWithOneResult(Usuario.class, "nombreUsuario", id);
+        if (u != null) {
+            return "exite";
+        } else {
+            u = new Usuario();
+            u.setNombreUsuario(id);
+            u.setEmail(email);
+            u.setTelefono(telefono);
+            u.setClave(Md5.getEncoddedString(clave));
+            if (cb.guardar(u)) {
+                return "ok";
+            } else {
+                return "fail";
+            }
         }
     }
 
