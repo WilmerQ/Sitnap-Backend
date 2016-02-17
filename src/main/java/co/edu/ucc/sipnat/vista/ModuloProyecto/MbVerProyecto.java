@@ -158,7 +158,7 @@ public class MbVerProyecto implements Serializable {
             dataModelSensor.getAxis(AxisType.Y).setLabel("Datos");
             DateAxis axis = new DateAxis("Tiempo");
             axis.setTickAngle(-50);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             axis.setMax(formatter.format(new Date()));
             axis.setTickFormat("%b %#d, %y");
             dataModelSensor.getAxes().put(AxisType.X, axis);
@@ -172,7 +172,7 @@ public class MbVerProyecto implements Serializable {
         LineChartSeries series1 = new LineChartSeries();
         series1.setLabel("Codigo: " + id);
         for (DatosSensor dse : dses) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             series1.set(formatter.format(dse.getFechaRecoleccion()), Integer.parseInt(dse.getDato()));
         }
         model.addSeries(series1);

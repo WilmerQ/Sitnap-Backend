@@ -28,6 +28,7 @@ public class DatosSensor extends CamposComunesdeEntidad implements Serializable 
     private Date fechaRecoleccion;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaSincronizacion;
+    private String horaDeRecoleccion;
 
     public Sensor getSensor() {
         return sensor;
@@ -60,6 +61,12 @@ public class DatosSensor extends CamposComunesdeEntidad implements Serializable 
     public void setFechaSincronizacion(Date fechaSincronizacion) {
         this.fechaSincronizacion = fechaSincronizacion;
     }
-    
-    
+
+    public String getHoraDeRecoleccion() {
+        return horaDeRecoleccion;
+    }
+
+    public void setHoraDeRecoleccion(String horaDeRecoleccion) {
+        this.horaDeRecoleccion = horaDeRecoleccion;
+    }
 }

@@ -113,8 +113,8 @@ public class SensorResource {
      */
     @GET
     @Produces("application/json")
-    @Path("/{codigo}/{dato}/{fechaRecoleccion}")
-    public String obtenerDato(@PathParam("codigo") String codigo, @PathParam("dato") String dato, @PathParam("fechaRecoleccion") String fechaRecoleccion) throws Exception {
+    @Path("/{codigo}/{dato}/{fechaRecoleccion}/{horaRecoleccion}")
+    public String obtenerDato(@PathParam("codigo") String codigo, @PathParam("dato") String dato, @PathParam("fechaRecoleccion") String fechaRecoleccion, @PathParam("horaRecoleccion") String horaRecoleccion) throws Exception {
         Auditoria auditoria;
         if (codigo.trim().length() == 0) {
             auditoria = new Auditoria();
@@ -134,11 +134,12 @@ public class SensorResource {
                 return "1"; //codigo de sensor erroneo
             } else {
                 if (sensor.getEstadoDelSensor().equals("Conectado")) {
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     DatosSensor ds = new DatosSensor();
                     ds.setDato(dato);
-                    ds.setFechaRecoleccion(formatter.parse(fechaRecoleccion));
+                    ds.setFechaRecoleccion(formatter.parse(fechaRecoleccion+" "+horaRecoleccion));
                     ds.setFechaSincronizacion(new Date());
+                    ds.setHoraDeRecoleccion(horaRecoleccion);
                     ds.setSensor(sensor);
                     if (cb.guardar(ds)) {
                         return "2";//correto
