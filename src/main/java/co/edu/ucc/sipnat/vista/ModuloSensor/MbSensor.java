@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.vista.ModuloSensor;
 
+import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
@@ -110,7 +111,7 @@ public class MbSensor implements Serializable {
         if (sensor.getId() != null) {
             draggableModel = new DefaultMapModel();
             LatLng coord1 = new LatLng(new Double(latitud), new Double(longitud));
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://localhost:8080/sipnat/imagenServlet?id=" + idTipoSensor));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + idTipoSensor));
             for (Marker premarker : draggableModel.getMarkers()) {
                 premarker.setDraggable(true);
             }

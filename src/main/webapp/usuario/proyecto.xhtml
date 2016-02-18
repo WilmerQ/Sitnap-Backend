@@ -38,7 +38,7 @@
                                                     <h:outputText value="#{row.nombre}" />
                                                 </p:column>
                                                 <p:column headerText="Icono" style="width: 30%">
-                                                    <p:graphicImage  url="http://localhost:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 32px; height:32px" /> 
+                                                    <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 32px; height:32px" /> 
                                                 </p:column>
                                                 <p:column  style="width: 15%">
                                                     <p:selectBooleanCheckbox value="#{row.selecionado}">
@@ -85,7 +85,7 @@
                                                     <h:outputText rendered="#{row.id == null}" value="Por asignar" />
                                                 </p:column>
                                                 <p:column headerText="Icono" style="width: 12%">
-                                                    <p:graphicImage  url="http://localhost:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 
+                                                    <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 
                                                 </p:column>
                                                 <p:column  style="width: 8%">
                                                     <p:commandLink  action="#{MbCrearProyecto.accionRemoverSensor(row)}" update="form">
@@ -118,7 +118,7 @@
                                                     <h:outputText rendered="#{row.id == null}" value="Por asignar" />
                                                 </p:column>
                                                 <p:column headerText="Icono" style="width: 12%">
-                                                    <p:graphicImage  url="http://localhost:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 
+                                                    <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 
                                                 </p:column>
                                                 <p:column  style="width: 8%">
                                                     <p:commandLink  action="#{MbCrearProyecto.accionVerSensor(row)}" update="form">

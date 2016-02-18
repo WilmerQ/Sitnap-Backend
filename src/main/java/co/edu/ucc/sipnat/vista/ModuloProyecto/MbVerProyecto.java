@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.vista.ModuloProyecto;
 
+import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaSensor;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
@@ -107,7 +108,7 @@ public class MbVerProyecto implements Serializable {
         for (ProyectoXSensor pxs : sensores) {
             listSensores.add(pxs.getSensor());
             LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
-            draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://localhost:8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
+            draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
         }
         cargaGrafica();
     }

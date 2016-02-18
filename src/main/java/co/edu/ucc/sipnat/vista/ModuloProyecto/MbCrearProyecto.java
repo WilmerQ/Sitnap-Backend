@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.vista.ModuloProyecto;
 
+import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaProyecto;
 import co.edu.ucc.sipnat.modelo.Proyecto;
@@ -134,7 +135,7 @@ public class MbCrearProyecto implements Serializable {
             longitud = "";
             latitud = "";
             //Draggable
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://localhost:8080/sipnat/imagenServlet?id=" + idTipoSensor));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + idTipoSensor));
             for (Marker premarker : draggableModel.getMarkers()) {
                 premarker.setDraggable(true);
             }
