@@ -48,7 +48,7 @@
                                                           mode="advanced"
                                                           multiple="true" 
                                                           label="Seleccione Fotos"
-                                                          update="panel"
+                                                          update=":form"
                                                           sizeLimit="2000000"
                                                           allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
                                                           cancelLabel="Cancelar" uploadLabel="Subir Archivos"/>
@@ -84,7 +84,7 @@
                                                     <p:outputLabel  value="#{row.unidadDeMedida}" />
                                                 </p:column>
                                                 <p:column headerText="Icono" >
-                                                    <p:graphicImage  url="http://localhost:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 32px; height:32px" /> 
+                                                    <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 32px; height:32px" /> 
                                                 </p:column>
                                                 <p:column style="width: 50px" >
                                                     <p:commandLink  action="#{MbTipoDeSensor.cargaTipoDeSensor(row)}" update=":form">

@@ -68,8 +68,10 @@ public class MbIndex implements Serializable {
         for (Proyecto proyecto : proyectos) {
             proyectoItems.add(new SelectItem(proyecto.getId(), proyecto.getNombre()));
         }
-        idProyecto = proyectos.get(1).getId();
-        cargaProyecto();
+        if (!proyectos.isEmpty()) {
+            idProyecto = proyectos.get(0).getId();
+            cargaProyecto();
+        }
     }
 
     public void cargaProyecto() {
@@ -78,8 +80,8 @@ public class MbIndex implements Serializable {
             sensores = cb.getByOneField(ProyectoXSensor.class, "proyecto", p);
             draggableModel = new DefaultMapModel();
             for (ProyectoXSensor pxs : sensores) {
-                LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));               
-                draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
+                LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
+                draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
             }
         }
     }

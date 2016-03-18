@@ -28,7 +28,7 @@ public class Proyecto extends CamposComunesdeEntidad implements Serializable {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = nombre.toUpperCase();
     }
 
     public String getDescripcion() {
@@ -36,7 +36,7 @@ public class Proyecto extends CamposComunesdeEntidad implements Serializable {
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+        this.descripcion = descripcion.toUpperCase();
     }
 
     public Usuario getUsuario() {

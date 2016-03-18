@@ -48,25 +48,44 @@ public class MbUsuario implements Serializable {
 
     public Boolean verificarFormulario() throws Exception {
         Boolean resultado = Boolean.TRUE;
+
         if (usuario.getNombreUsuario().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nombre de usuario");
         } else {
-            Usuario u = (Usuario) cb.getByOneFieldWithOneResult(Usuario.class, "nombreUsuario", usuario.getNombreUsuario());
-            if (u != null) {
+            String[] campos = usuario.getNombreUsuario().split(" ");
+            if (campos.length == 0) {
+                Usuario u = (Usuario) cb.getByOneFieldWithOneResult(Usuario.class, "nombreUsuario", usuario.getNombreUsuario());
+                if (u != null) {
+                    resultado = Boolean.FALSE;
+                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Nombre de usuario ya exite");
+                }
+            } else {
                 resultado = Boolean.FALSE;
-                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Nombre de usuario ya exite");
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo nombre de usuario no permite espacio");
             }
-        }
 
+        }
         if (clave1.trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue clave");
+        } else {
+            String[] campos = clave1.split(" ");
+            if (campos.length > 0) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo clave  no permite espacio");
+            }
         }
 
         if (clave2.trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue clave de confirmacion");
+        }else{
+            String[] campos = clave2.split(" ");
+            if (campos.length > 0) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo clave de confirmacion no permite espacio");
+            }
         }
 
         if (!clave1.equals(clave2)) {
@@ -77,22 +96,34 @@ public class MbUsuario implements Serializable {
         if (usuario.getEmail().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Email");
+        }else{
+            String[] campos = usuario.getEmail().split(" ");
+            if (campos.length > 0) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo email no permite espacio");
+            }
         }
 
         if (usuario.getTelefono().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Telefono");
+        }else{
+            String[] campos = usuario.getTelefono().split(" ");
+            if (campos.length > 0) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo telefono no permite espacio");
+            }
         }
         return resultado;
     }
-    
-    public void accionGuarda() throws Exception{
-        if(verificarFormulario()){
+
+    public void accionGuarda() throws Exception {
+        if (verificarFormulario()) {
             usuario.setClave(Md5.getEncoddedString(clave1));
-            if(cb.guardar(usuario)){
+            if (cb.guardar(usuario)) {
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se ha guardado");
                 init();
-            }else{
+            } else {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "No se ha guardado");
             }
         }
@@ -126,7 +157,5 @@ public class MbUsuario implements Serializable {
     public void setClave2(String clave2) {
         this.clave2 = clave2;
     }
-    
-    
 
 }

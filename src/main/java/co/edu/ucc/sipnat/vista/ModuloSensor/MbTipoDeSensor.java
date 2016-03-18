@@ -8,6 +8,9 @@ package co.edu.ucc.sipnat.vista.ModuloSensor;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
 import com.ibcaribe.i4w.base.SessionOperations;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -20,7 +23,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 
 /**
@@ -49,13 +54,35 @@ public class MbTipoDeSensor implements Serializable {
 
     public void handleFileUpload(FileUploadEvent Imagen) throws IOException {
         InputStream fi;
+        InputStream fi2;
         fi = Imagen.getFile().getInputstream();
+        fi2 = Imagen.getFile().getInputstream();
         byte[] buffer = new byte[(int) Imagen.getFile().getSize()];
-        fi.read(buffer);
-        UUID id = UUID.randomUUID();
-        tipoSensor.setLogoDelTipo(buffer);
-        tipoSensor.setUuid(id.toString().toUpperCase());
-        SessionOperations.setSessionValue(id.toString().toUpperCase(), buffer);
+        if (verificarIcono(fi2)) {
+            fi.read(buffer);
+            UUID id = UUID.randomUUID();
+            tipoSensor.setLogoDelTipo(buffer);
+            tipoSensor.setUuid(id.toString().toUpperCase());
+            SessionOperations.setSessionValue(id.toString().toUpperCase(), buffer);
+        }
+    }
+
+    public Boolean verificarIcono(InputStream fi) {
+        Boolean resultado = Boolean.TRUE;
+        try {
+            BufferedImage buf = ImageIO.read(fi);
+            int height = buf.getHeight();
+            int width = buf.getWidth();
+            System.out.println(width + " - " + height);
+            if (width != 32 && height != 32) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "La dimension de la imagen debe ser de 32 x 32");
+            }
+        } catch (Exception e) {
+            resultado = Boolean.FALSE;
+            //e.printStackTrace();
+        }
+        return resultado;
     }
 
     public Boolean verificarFormulario() throws Exception {

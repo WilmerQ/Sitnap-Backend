@@ -70,13 +70,21 @@ public class ProyectoResource {
         List<Long> idP = new ArrayList<>();
         List<co.edu.ucc.sipnat.clases.Proyecto> listp = new ArrayList<>();
         for (Proyecto pr : p) {
-           listp.add(new co.edu.ucc.sipnat.clases.Proyecto(pr));    
-           idP.add(pr.getId());
+            listp.add(new co.edu.ucc.sipnat.clases.Proyecto(pr));
+            idP.add(pr.getId());
         }
-        List<Proyecto> list = cb.getNotIn(Proyecto.class, "id", idP);
-        for (Proyecto list1 : list) {
-            listp.add(new co.edu.ucc.sipnat.clases.Proyecto(list1));    
-            p.add(list1);
+        if (!idP.isEmpty()) {
+            List<Proyecto> list = cb.getNotIn(Proyecto.class, "id", idP);
+            for (Proyecto list1 : list) {
+                listp.add(new co.edu.ucc.sipnat.clases.Proyecto(list1));
+                p.add(list1);
+            }
+        } else {
+            List<Proyecto> proyectos = cb.getAll(Proyecto.class);
+            listp = new ArrayList<>();
+            for (Proyecto proyecto : proyectos) {
+                listp.add(new co.edu.ucc.sipnat.clases.Proyecto(proyecto));
+            }
         }
         Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
         return g.toJson(listp);

@@ -32,6 +32,7 @@ public class ApplicationConfig extends Application {
         resources.add(co.edu.ucc.sipnat.webservice.CambioContraResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.CambioEmailResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.DatoResource.class);
+        resources.add(co.edu.ucc.sipnat.webservice.DispositivoResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.ProyectoResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.SensorMovilResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.SensorResource.class);

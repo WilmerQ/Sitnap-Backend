@@ -7,6 +7,7 @@
 
     <h:head>
         <ui:include src="templates/head_config.xhtml" />
+        
         <style>
             .content:before {
                 content: "";
@@ -89,7 +90,7 @@
                                         <p:password style="width: 100%" value="#{MbUsuario.clave2}" />
                                     </h:panelGrid>                   
                                     <br/>
-                                    <p:commandButton style="float: right" value="Registrar"  update=":form2" actionListener="#{MbUsuario.accionGuarda()}" styleClass="ui-priority-primary" />                                   
+                                    <p:commandButton style="float: right" value="Registrar"  update="growl-total :form2" actionListener="#{MbUsuario.accionGuarda()}" styleClass="ui-priority-primary" />                                   
                                 </h:form>
                             </div>
 

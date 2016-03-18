@@ -12,6 +12,7 @@ import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
+import co.edu.ucc.sipnat.modelo.Usuario;
 import com.ibcaribe.i4w.base.SessionOperations;
 import java.io.IOException;
 import java.io.Serializable;
@@ -89,7 +90,7 @@ public class MbCrearProyecto implements Serializable {
                 draggableModel = new DefaultMapModel();
                 LatLng coord1 = new LatLng(11.247141, -74.205504);
                 //Draggable
-                draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://localhost:8080/sipnat/imagenServlet?id=" + idTipoSensor));
+                draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
                 for (Marker premarker : draggableModel.getMarkers()) {
                     premarker.setDraggable(true);
                 }
@@ -120,6 +121,14 @@ public class MbCrearProyecto implements Serializable {
         if (latitud.trim().length() == 0 || longitud.trim().length() == 0) {
             res = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Ubique el sensor");
+        } else {
+            try {
+                Double l = new Double(latitud);
+                Double lo = new Double(longitud);
+            } catch (Exception e) {
+                res = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Latitud o longitud deben ser datos numericos");
+            }
         }
         return res;
     }
@@ -135,7 +144,7 @@ public class MbCrearProyecto implements Serializable {
             longitud = "";
             latitud = "";
             //Draggable
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + idTipoSensor));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
             for (Marker premarker : draggableModel.getMarkers()) {
                 premarker.setDraggable(true);
             }
@@ -165,7 +174,7 @@ public class MbCrearProyecto implements Serializable {
         draggableModel = new DefaultMapModel();
         LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
         //Draggable
-        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://localhost:8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
+        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
     }
 
     public void accionVerTodoLosSensores() {
@@ -177,7 +186,7 @@ public class MbCrearProyecto implements Serializable {
         for (Sensor row : sensores) {
             LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
             //Draggable
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://localhost:8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
 
         }
     }
@@ -208,7 +217,7 @@ public class MbCrearProyecto implements Serializable {
         }
     }
 
-    public Boolean verificarFormulario() {
+    public Boolean verificarFormulario() throws Exception {
         Boolean resultado = Boolean.TRUE;
         if (sensores.isEmpty()) {
             resultado = Boolean.FALSE;
@@ -217,7 +226,14 @@ public class MbCrearProyecto implements Serializable {
         if (proyecto.getNombre().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nombre");
+        } else {
+            Proyecto p = (Proyecto) cb.getByOneFieldWithOneResult(Proyecto.class, "nombre", proyecto.getNombre());
+            if (p != null) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Nombre de proyecto ya exite");
+            }
         }
+
         if (proyecto.getDescripcion().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Descricion");
