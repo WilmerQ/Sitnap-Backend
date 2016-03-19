@@ -6,6 +6,7 @@
 package co.edu.ucc.sipnat.modelo;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,9 @@ import javax.persistence.Id;
  */
 @Entity
 public class Dispositivo extends CamposComunesdeEntidad implements Serializable {
+    @Column(columnDefinition = "TEXT")
    private String token;
+    @Column(columnDefinition = "TEXT")
    private String imei;
 
     public String getToken() {
