@@ -23,10 +23,9 @@ public class ApplicationConfig extends Application {
     }
 
     /**
-     * Do not modify addRestResourceClasses() method.
-     * It is automatically populated with
-     * all resources defined in the project.
-     * If required, comment out calling this method in getClasses().
+     * Do not modify addRestResourceClasses() method. It is automatically
+     * populated with all resources defined in the project. If required, comment
+     * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(co.edu.ucc.sipnat.webservice.CambioContraResource.class);
@@ -37,6 +36,7 @@ public class ApplicationConfig extends Application {
         resources.add(co.edu.ucc.sipnat.webservice.SensorMovilResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.SensorResource.class);
         resources.add(co.edu.ucc.sipnat.webservice.UsuarioResource.class);
+        resources.add(co.edu.ucc.sipnat.webservice.ZonaAfectadaResource.class);
     }
-    
+
 }

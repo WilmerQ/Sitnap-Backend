@@ -5,10 +5,10 @@
  */
 package co.edu.ucc.sipnat.vista;
 
+import co.edu.ucc.sipnat.base.SessionOperations;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaLogin;
 import co.edu.ucc.sipnat.modelo.Usuario;
-import com.ibcaribe.i4w.base.SessionOperations;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;

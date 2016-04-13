@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.ibcaribe.i4w.base;
+package co.edu.ucc.sipnat.base;
 
 import javax.faces.context.FacesContext;
 
 /**
- * @author Ing Danilo
+ * @author Alvaro Padilla
  *
  */
 public class SessionOperations {

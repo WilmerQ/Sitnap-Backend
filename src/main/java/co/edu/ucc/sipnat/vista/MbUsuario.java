@@ -5,14 +5,12 @@
  */
 package co.edu.ucc.sipnat.vista;
 
+import co.edu.ucc.sipnat.base.Md5;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Usuario;
-import com.ibcaribe.procc.services.Md5;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.Dependent;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;

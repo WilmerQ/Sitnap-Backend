@@ -4,7 +4,7 @@
  */
 package co.edu.ucc.sipnat.modelo;
 
-import com.ibcaribe.i4w.base.SessionOperations;
+import co.edu.ucc.sipnat.base.SessionOperations;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;

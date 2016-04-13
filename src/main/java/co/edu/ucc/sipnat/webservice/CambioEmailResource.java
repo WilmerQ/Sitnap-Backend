@@ -7,7 +7,6 @@ package co.edu.ucc.sipnat.webservice;
 
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Usuario;
-import com.ibcaribe.procc.services.Md5;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;

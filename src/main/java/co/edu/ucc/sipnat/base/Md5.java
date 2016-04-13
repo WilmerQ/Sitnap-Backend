@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ibcaribe.procc.services;
+package co.edu.ucc.sipnat.base;
 
 import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author juvinao
+ * @author Alvaro Padilla
  */
 public class Md5 {
 

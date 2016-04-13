@@ -5,8 +5,8 @@
 package co.edu.ucc.sipnat.logica;
 
 
+import co.edu.ucc.sipnat.base.FieldtoQuery;
 import co.edu.ucc.sipnat.modelo.CamposComunesdeEntidad;
-import com.ibcaribe.procc.services.FieldtoQuery;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;

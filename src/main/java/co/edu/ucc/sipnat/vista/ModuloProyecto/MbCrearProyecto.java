@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.vista.ModuloProyecto;
 
+import co.edu.ucc.sipnat.base.SessionOperations;
 import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaProyecto;
@@ -12,8 +13,6 @@ import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
-import co.edu.ucc.sipnat.modelo.Usuario;
-import com.ibcaribe.i4w.base.SessionOperations;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,8 +32,8 @@ import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 /**
- *
- * @author Windows 8.1
+ * @author Alvaro padilla
+ * @see java.io.Serializable
  */
 @ViewScoped
 @ManagedBean(name = "MbCrearProyecto")

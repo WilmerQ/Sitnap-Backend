@@ -5,12 +5,10 @@
  */
 package co.edu.ucc.sipnat.vista.ModuloSensor;
 
+import co.edu.ucc.sipnat.base.SessionOperations;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
-import com.ibcaribe.i4w.base.SessionOperations;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -24,8 +22,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 
 /**

@@ -7,8 +7,8 @@ package co.edu.ucc.sipnat.logica;
 
 
 
+import co.edu.ucc.sipnat.base.Md5;
 import co.edu.ucc.sipnat.modelo.Usuario;
-import com.ibcaribe.procc.services.Md5;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

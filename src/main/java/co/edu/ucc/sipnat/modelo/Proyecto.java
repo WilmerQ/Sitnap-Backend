@@ -9,6 +9,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  *
@@ -22,6 +23,8 @@ public class Proyecto extends CamposComunesdeEntidad implements Serializable {
     private String descripcion;
     @ManyToOne
     private Usuario usuario;
+    @Transient
+    private Boolean selecionado;
 
     public String getNombre() {
         return nombre;
@@ -46,4 +49,12 @@ public class Proyecto extends CamposComunesdeEntidad implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public Boolean getSelecionado() {
+        return selecionado;
+    }
+
+    public void setSelecionado(Boolean selecionado) {
+        this.selecionado = selecionado;
+    }    
 }

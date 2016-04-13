@@ -5,15 +5,14 @@
  */
 package co.edu.ucc.sipnat.webservice;
 
+import co.edu.ucc.sipnat.base.FieldtoQuery;
 import co.edu.ucc.sipnat.base.GsonExcludeListStrategy;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
-import co.edu.ucc.sipnat.modelo.TipoSensor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ibcaribe.procc.services.FieldtoQuery;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;

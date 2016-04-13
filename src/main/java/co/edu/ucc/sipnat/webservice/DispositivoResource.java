@@ -29,8 +29,8 @@ public class DispositivoResource {
 
     @Context
     private UriInfo context;
-    
-     @EJB
+
+    @EJB
     private CommonsBean cb;
 
     /**
@@ -40,7 +40,9 @@ public class DispositivoResource {
     }
 
     /**
-     * Retrieves representation of an instance of co.edu.ucc.sipnat.webservice.DispositivoResource
+     * Retrieves representation of an instance of
+     * co.edu.ucc.sipnat.webservice.DispositivoResource
+     *
      * @param token
      * @param imei
      * @return an instance of java.lang.String
@@ -49,26 +51,37 @@ public class DispositivoResource {
     @Path("/{token}/{imei}")
     @Produces("application/json")
     public String guardaDato(@PathParam("token") String token, @PathParam("imei") String imei) {
-        if(token.trim().length() > 0){
-            if(imei.trim().length() > 0){
-                Dispositivo d = new Dispositivo();
-                d.setImei(imei);
-                d.setToken(token);
-                if(cb.guardar(d)){
-                    return "Ok";
-                }else{
+        try {
+            if (token.trim().length() > 0) {
+                if (imei.trim().length() > 0) {
+                    Dispositivo d = (Dispositivo) cb.getByOneFieldWithOneResult(Dispositivo.class, "token", token);
+                    if (d == null) {
+                        d = new Dispositivo();
+                        d.setImei(imei);
+                        d.setToken(token);
+                        if (cb.guardar(d)) {
+                            return "Ok";
+                        } else {
+                            return "Error";
+                        }
+                    } else {
+                        return "Error";
+                    }
+                } else {
                     return "Error";
                 }
-            }else{
+            } else {
                 return "Error";
             }
-        }else{
+        } catch (Exception e) {
             return "Error";
         }
+
     }
 
     /**
      * PUT method for updating or creating an instance of DispositivoResource
+     *
      * @param content representation for the resource
      * @return an HTTP response with content of the updated or created resource.
      */

@@ -5,19 +5,17 @@
  */
 package co.edu.ucc.sipnat.vista.ModuloSensor;
 
+import co.edu.ucc.sipnat.base.SessionOperations;
 import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import co.edu.ucc.sipnat.modelo.TipoSensor;
 import co.edu.ucc.sipnat.modelo.Usuario;
-import com.ibcaribe.i4w.base.SessionOperations;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.Dependent;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;

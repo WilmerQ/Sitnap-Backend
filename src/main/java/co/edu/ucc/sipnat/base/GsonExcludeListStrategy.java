@@ -9,7 +9,7 @@ import com.google.gson.FieldAttributes;
 
 /**
  *
- * @author juvinao
+ * @author Alvaro Padilla
  */
 public class GsonExcludeListStrategy implements ExclusionStrategy {
 
