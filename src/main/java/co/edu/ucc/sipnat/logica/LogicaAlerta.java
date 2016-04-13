@@ -33,6 +33,7 @@ public class LogicaAlerta {
 
     
     //Simulacion de prueba para mandar una notificacion a la app movil.
+    
     public void accionMandarAlarta() {
         Boolean mandarAlerta = Boolean.FALSE;
         for (int i = 0; i < 10; i++) {
