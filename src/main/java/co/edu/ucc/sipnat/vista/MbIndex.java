@@ -8,9 +8,11 @@ package co.edu.ucc.sipnat.vista;
 import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaSensor;
+import co.edu.ucc.sipnat.modelo.CordenadaDeLaZona;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
+import co.edu.ucc.sipnat.modelo.ZonaXProyecto;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +36,7 @@ import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.primefaces.model.map.Polygon;
 
 /**
  *
@@ -82,6 +85,20 @@ public class MbIndex implements Serializable {
             for (ProyectoXSensor pxs : sensores) {
                 LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
                 draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
+            }
+            List<ZonaXProyecto> zxps = cb.getByOneField(ZonaXProyecto.class, "proyecto", p);
+            for (ZonaXProyecto zxp : zxps) {
+                Polygon polygon = new Polygon();
+                List<CordenadaDeLaZona> cdlzs = cb.getByOneField(CordenadaDeLaZona.class, "zonaAfectada", zxp.getZonaAfectada());
+                for (CordenadaDeLaZona cdlz : cdlzs) {
+                    LatLng ll = new LatLng(new Double(cdlz.getLatitud()), new Double(cdlz.getLongitud()));
+                    polygon.getPaths().add(ll);
+                }
+                polygon.setStrokeColor("#FF0000");
+                polygon.setFillColor("#FF0000");
+                polygon.setStrokeOpacity(0.7);
+                polygon.setFillOpacity(0.5);
+                draggableModel.addOverlay(polygon);
             }
         }
     }

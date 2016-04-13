@@ -35,12 +35,12 @@
                                     <div class="panel-body">
                                         <div class="col-md-12">  
                                             <p:gmap id="gmap" center="11.247141, -74.205504" zoom="14" type="ROADMAP"  model="#{MbZonaAfecta.advancedModel}" style="width:100%;height:375px">
-                                                <p:ajax event="markerDrag" listener="#{MbZonaAfecta.onMarkerDrag}"/>
-                                                <p:ajax event="overlaySelect" listener="#{MbZonaAfecta.onMarkerSelect}" />
+                                                <p:ajax update=":form" event="markerDrag" listener="#{MbZonaAfecta.onMarkerDrag}"/>
+                                                <p:ajax update=":form" event="overlaySelect" listener="#{MbZonaAfecta.onMarkerSelect}" />
                                             </p:gmap>
                                             <div style="float: left">
-                                                <p:commandButton value="Agregar " action="#{MbZonaAfecta.agragarMarker()}" update=":form"/>
-                                                <p:commandButton value="Dibujar " action="#{MbZonaAfecta.dibujar()}" update=":form"/>
+                                                <p:commandButton disabled="#{MbZonaAfecta.bloqueo}" value="Agregar " action="#{MbZonaAfecta.agragarMarker()}" update=":form"/>
+                                                <p:commandButton disabled="#{MbZonaAfecta.bloqueo}" value="Dibujar " action="#{MbZonaAfecta.dibujar()}" update=":form"/>
                                                 <p:commandButton value="Borra " action="#{MbZonaAfecta.init()}" update=":form"/>
                                             </div>
                                         </div>
@@ -81,7 +81,7 @@
                                                 <br/>
                                             </div>
                                             <div style="float: right">
-                                                <p:commandButton value="Guarda" action="#{MbZonaAfecta.accionGuarda()}" update=":form"/>
+                                                <p:commandButton disabled="#{MbZonaAfecta.bloqueo}" value="Guarda" action="#{MbZonaAfecta.accionGuarda()}" update=":form"/>
                                             </div>
                                         </div>  
                                     </div>

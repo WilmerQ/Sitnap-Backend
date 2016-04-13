@@ -50,6 +50,8 @@ public class MbZonaAfecta implements Serializable {
     private List<SelectItem> colorItems;
     private List<Marker> listaMarker;
 
+    private Boolean bloqueo;
+
     public MbZonaAfecta() {
     }
 
@@ -72,14 +74,18 @@ public class MbZonaAfecta implements Serializable {
         colorItems.add(new SelectItem("#65FF00", "Verde"));
         colorItems.add(new SelectItem("#FF0000", "Rojo"));
         colorItems.add(new SelectItem("#e5FF00", "Amarillo"));
+        bloqueo = Boolean.FALSE;
     }
 
     public void agragarMarker() {
+        bloqueo = Boolean.TRUE;
         if (!listaCordenadaDeLaZona.isEmpty()) {
             advancedModel = new DefaultMapModel();
             for (CordenadaDeLaZona cdlz : listaCordenadaDeLaZona) {
                 advancedModel.addOverlay(cdlz.getMarker());
             }
+        } else {
+            mostrarMensaje(FacesMessage.SEVERITY_INFO, "Informacion", "Mueva el punto en el mapa");
         }
         LatLng coord1 = new LatLng(11.247141, -74.205504);
         int numero = listaCordenadaDeLaZona.size() + 1;
@@ -90,72 +96,27 @@ public class MbZonaAfecta implements Serializable {
     }
 
     public void dibujar() {
-        if (zonaAfectada.getNombreDelaZona().trim().length() > 0) {
-            if (listaCordenadaDeLaZona.size() > 1) {
-                advancedModel = new DefaultMapModel();
-                Polygon polygon = new Polygon();
-
-                //Polygon
-                for (CordenadaDeLaZona cdlz : listaCordenadaDeLaZona) {
-                    System.out.println(cdlz.getOrden());
-                    polygon.getPaths().add(cdlz.getMarker().getLatlng());
-                }
-
-                polygon.setStrokeColor("#FF0000");
-                polygon.setFillColor("#FF0000");
-                polygon.setStrokeOpacity(0.7);
-                polygon.setFillOpacity(0.5);
-                advancedModel.addOverlay(polygon);
-
-                numeroPoligono();
-            } else {
-                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Tiene que agregar mas de un punto");
+        if (listaCordenadaDeLaZona.size() > 1) {
+            advancedModel = new DefaultMapModel();
+            Polygon polygon = new Polygon();
+            //Polygon
+            for (CordenadaDeLaZona cdlz : listaCordenadaDeLaZona) {
+                System.out.println(cdlz.getOrden());
+                polygon.getPaths().add(cdlz.getMarker().getLatlng());
             }
+            polygon.setStrokeColor("#FF0000");
+            polygon.setFillColor("#FF0000");
+            polygon.setStrokeOpacity(0.7);
+            polygon.setFillOpacity(0.5);
+            advancedModel.addOverlay(polygon);
         } else {
-            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nombre de la zona afectada");
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Tiene que agregar mas de un punto");
         }
-    }
-
-    
-    public void numeroPoligono() {
-        Polygon p = advancedModel.getPolygons().get(0);
-        List<LatLng> latLngs = p.getPaths();
-
-        //latitud menor  
-        LatLng latmenor = latLngs.get(0);
-        LatLng latMayor = latLngs.get(0);
-        for (int i = 0; i < latLngs.size(); i++) {
-            if (latLngs.get(i).getLat() < latmenor.getLat()) {
-                latmenor = latLngs.get(i);
-            }
-            if (latLngs.get(i).getLat() > latMayor.getLat()) {
-                latMayor = latLngs.get(i);
-            }
-        }
-
-        //longitud menor
-        LatLng lonmenor = latLngs.get(0);
-        LatLng lonMayor = latLngs.get(0);
-        for (int i = 0; i < latLngs.size(); i++) {
-            if (latLngs.get(i).getLng() < lonmenor.getLng()) {
-                lonmenor = latLngs.get(i);
-            }
-            if (latLngs.get(i).getLng() > lonMayor.getLng()) {
-                lonMayor = latLngs.get(i);
-            }
-        }
-
-        double dLat = latMayor.getLat() - latmenor.getLat();
-        double dLng = lonMayor.getLng() - lonmenor.getLng();
-        double sindLat = dLat / 2;
-        double sindLng = dLng / 2;
-
-        LatLng coord1 = new LatLng(sindLat + latmenor.getLat(), sindLng + lonmenor.getLng());
-        advancedModel.addOverlay(new Marker(coord1, zonaAfectada.getNombreDelaZona()));
     }
 
     public void onMarkerDrag(MarkerDragEvent event) {
         marker = event.getMarker();
+        bloqueo = Boolean.FALSE;
         if (listaCordenadaDeLaZona.isEmpty()) {
             CordenadaDeLaZona cdlz = new CordenadaDeLaZona();
             cdlz.setMarker(marker);
@@ -235,6 +196,11 @@ public class MbZonaAfecta implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Selecione al menos un proyecto que le pertenesca la zona");
         }
 
+        if (zonaAfectada.getNombreDelaZona().trim().length() == 0) {
+            resultado = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue el nombre de la zona");
+        }
+
         return resultado;
     }
 
@@ -311,4 +277,11 @@ public class MbZonaAfecta implements Serializable {
         this.listaMarker = listaMarker;
     }
 
+    public Boolean getBloqueo() {
+        return bloqueo;
+    }
+
+    public void setBloqueo(Boolean bloqueo) {
+        this.bloqueo = bloqueo;
+    }
 }
