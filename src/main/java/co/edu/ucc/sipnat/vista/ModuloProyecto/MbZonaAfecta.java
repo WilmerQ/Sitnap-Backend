@@ -116,6 +116,7 @@ public class MbZonaAfecta implements Serializable {
         }
     }
 
+    
     public void numeroPoligono() {
         Polygon p = advancedModel.getPolygons().get(0);
         List<LatLng> latLngs = p.getPaths();
