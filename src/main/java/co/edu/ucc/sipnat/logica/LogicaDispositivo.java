@@ -36,4 +36,12 @@ public class LogicaDispositivo {
             return null;
         }
     }
+    
+    public Dispositivo getDispositivo(String imei, Proyecto p) {
+        try {
+            return (Dispositivo) em.createQuery("SELECT d FROM Dispositivo d WHERE d.imei = :i AND d.proyecto = :p").setParameter("p", p).setParameter("i", imei).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

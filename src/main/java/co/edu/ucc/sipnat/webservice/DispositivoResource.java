@@ -92,14 +92,14 @@ public class DispositivoResource {
     }
 
     @GET
-    @Path("/{token}/{id}")
+    @Path("/{imei}/{id}")
     @Produces("application/json")
-    public String eliminarDato(@PathParam("token") String token,  @PathParam("id") String id) {
+    public String eliminarDato(@PathParam("imei") String imei, @PathParam("id") String id) {
         try {
-            if (token.trim().length() > 0) {
+            if (imei.trim().length() > 0) {
                 Proyecto p = (Proyecto) cb.getById(Proyecto.class, new Long(id));
                 if (p != null) {
-                    Dispositivo d = ld.getDispositivos(token, p);
+                    Dispositivo d = ld.getDispositivo(imei, p);
                     if (d != null) {
                         if (cb.remove(d)) {
                             return "Ok";
