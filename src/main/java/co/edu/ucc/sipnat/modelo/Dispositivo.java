@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -18,10 +19,13 @@ import javax.persistence.Id;
  */
 @Entity
 public class Dispositivo extends CamposComunesdeEntidad implements Serializable {
+
     @Column(columnDefinition = "TEXT")
-   private String token;
+    private String token;
     @Column(columnDefinition = "TEXT")
-   private String imei;
+    private String imei;
+    @ManyToOne
+    private Proyecto proyecto;
 
     public String getToken() {
         return token;
@@ -37,5 +41,13 @@ public class Dispositivo extends CamposComunesdeEntidad implements Serializable 
 
     public void setImei(String imei) {
         this.imei = imei;
-    }   
+    }
+
+    public Proyecto getProyecto() {
+        return proyecto;
+    }
+
+    public void setProyecto(Proyecto proyecto) {
+        this.proyecto = proyecto;
+    }
 }

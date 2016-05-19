@@ -5,11 +5,14 @@
  */
 package co.edu.ucc.sipnat.logica;
 
+import co.edu.ucc.sipnat.modelo.Dispositivo;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
@@ -21,6 +24,9 @@ import javax.ejb.Stateless;
 @Stateless
 @LocalBean
 public class LogicaAlerta {
+    
+    @EJB
+    private CommonsBean cb;
     
     //Key de la app movil.
     public static final String GCM_API_KEY = "AIzaSyANLRpamMIbOZ_nOmU8JnroWtBH8_bdtBw";
@@ -45,16 +51,18 @@ public class LogicaAlerta {
         }
         if (mandarAlerta) {
             try {
-                for (int i = 0; i < 1; i++) {
+                List<Dispositivo> ds = cb.getAll(Dispositivo.class);
+                ArrayList<String> devicesList = new ArrayList<>();
+                for (Dispositivo d : ds) {
+                    devicesList.add(d.getToken());
+                }
+                
                     Sender sender = new Sender(GCM_API_KEY);
-                    ArrayList<String> devicesList = new ArrayList<>();
-                    devicesList.add(REG_ID);
-                    devicesList.add(REG_ID2);
                     Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData(MESSAGE_KEY, MESSAGE_VALUE).build();
                     MulticastResult result = sender.send(message, devicesList, 1);
                     sender.send(message, devicesList, 1);
                     System.out.println("Resultado: " + result.toString());
-                }
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }

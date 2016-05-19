@@ -6,7 +6,9 @@
 package co.edu.ucc.sipnat.webservice;
 
 import co.edu.ucc.sipnat.logica.CommonsBean;
+import co.edu.ucc.sipnat.logica.LogicaDispositivo;
 import co.edu.ucc.sipnat.modelo.Dispositivo;
+import co.edu.ucc.sipnat.modelo.Proyecto;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
@@ -33,6 +35,9 @@ public class DispositivoResource {
     @EJB
     private CommonsBean cb;
 
+    @EJB
+    private LogicaDispositivo ld;
+
     /**
      * Creates a new instance of DispositivoResource
      */
@@ -45,26 +50,34 @@ public class DispositivoResource {
      *
      * @param token
      * @param imei
+     * @param id
      * @return an instance of java.lang.String
      */
     @GET
-    @Path("/{token}/{imei}")
+    @Path("/{token}/{imei}/{id}")
     @Produces("application/json")
-    public String guardaDato(@PathParam("token") String token, @PathParam("imei") String imei) {
+    public String guardaDato(@PathParam("token") String token, @PathParam("imei") String imei, @PathParam("id") String id) {
         try {
             if (token.trim().length() > 0) {
                 if (imei.trim().length() > 0) {
-                    Dispositivo d = (Dispositivo) cb.getByOneFieldWithOneResult(Dispositivo.class, "token", token);
-                    if (d == null) {
-                        d = new Dispositivo();
-                        d.setImei(imei);
-                        d.setToken(token);
-                        if (cb.guardar(d)) {
-                            return "Ok";
+                    Proyecto p = (Proyecto) cb.getById(Proyecto.class, new Long(id));
+                    if (p != null) {
+                        Dispositivo d = ld.getDispositivos(token, p);
+                        if (d == null) {
+                            d = new Dispositivo();
+                            d.setImei(imei);
+                            d.setToken(token);
+                            d.setProyecto(p);
+                            if (cb.guardar(d)) {
+                                return "Ok";
+                            } else {
+                                return "Error";
+                            }
                         } else {
                             return "Error";
                         }
                     } else {
+
                         return "Error";
                     }
                 } else {
