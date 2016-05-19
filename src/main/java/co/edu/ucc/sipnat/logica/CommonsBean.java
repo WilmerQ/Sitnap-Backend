@@ -4,7 +4,6 @@
  */
 package co.edu.ucc.sipnat.logica;
 
-
 import co.edu.ucc.sipnat.base.FieldtoQuery;
 import co.edu.ucc.sipnat.modelo.CamposComunesdeEntidad;
 import java.util.List;
@@ -40,9 +39,14 @@ public class CommonsBean {
         }
     }
 
-    public void remove(CamposComunesdeEntidad f) {
-        f = (CamposComunesdeEntidad) getById(f.getClass(), f.getId());
-        em.remove(f);
+    public Boolean remove(CamposComunesdeEntidad f) {
+        try {
+            f = (CamposComunesdeEntidad) getById(f.getClass(), f.getId());
+            em.remove(f);
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
         //em.remove(em.contains(f) ? f : em.merge(f));
     }
 
@@ -63,7 +67,7 @@ public class CommonsBean {
         } catch (NoResultException e) {
             return null;
         }
-        
+
     }
 
     public List getByOneField(Class o, String campo, Object value) {
@@ -93,6 +97,7 @@ public class CommonsBean {
     public List getByManyFields(Class o, List<FieldtoQuery> campos) {
         return getByManyFields(o, campos, "");
     }
+
     public List getByManyFields(Class o, List<FieldtoQuery> campos, String order) {
         return getByManyFields(o, campos, order, 0);
     }
@@ -124,7 +129,7 @@ public class CommonsBean {
                     query.setParameter("f" + i, f.getValorCampo());
                 }
             }
-            if (limit>0){
+            if (limit > 0) {
                 query.setMaxResults(limit);
             }
             return query.getResultList();

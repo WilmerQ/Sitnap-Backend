@@ -74,7 +74,7 @@ public class DispositivoResource {
                                 return "Error";
                             }
                         } else {
-                            return "Error";
+                            return "Ya Exite";
                         }
                     } else {
 
@@ -89,7 +89,36 @@ public class DispositivoResource {
         } catch (Exception e) {
             return "Error";
         }
+    }
 
+    @GET
+    @Path("/{token}/{id}")
+    @Produces("application/json")
+    public String eliminarDato(@PathParam("token") String token,  @PathParam("id") String id) {
+        try {
+            if (token.trim().length() > 0) {
+                Proyecto p = (Proyecto) cb.getById(Proyecto.class, new Long(id));
+                if (p != null) {
+                    Dispositivo d = ld.getDispositivos(token, p);
+                    if (d != null) {
+                        if (cb.remove(d)) {
+                            return "Ok";
+                        } else {
+                            return "Error";
+                        }
+                    } else {
+                        return "No Exite";
+                    }
+                } else {
+
+                    return "Error";
+                }
+            } else {
+                return "Error";
+            }
+        } catch (Exception e) {
+            return "Error";
+        }
     }
 
     /**
