@@ -11,12 +11,14 @@ import co.edu.ucc.sipnat.logica.LogicaSensor;
 import co.edu.ucc.sipnat.modelo.Auditoria;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Proyecto;
+import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -124,6 +126,14 @@ public class MbReportes implements Serializable {
 
     public Boolean verificarFormulario() {
         Boolean res = Boolean.TRUE;
+
+        if (sensoresXProyecto) {
+            if (idProye == null) {
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue codigo del proyecto");
+                res = Boolean.FALSE;
+            }
+        }
+
         if (proyecto) {
             if (fechafinal == null) {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue fecha final");
@@ -136,7 +146,7 @@ public class MbReportes implements Serializable {
 
             }
 
-            if (idProyecto == null) {
+            if (idProye == null) {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue codigo del proyecto");
                 res = Boolean.FALSE;
             }
@@ -187,7 +197,7 @@ public class MbReportes implements Serializable {
                 rowinit.createCell(cellinit++).setCellValue("Codigo");
                 rowinit.createCell(cellinit++).setCellValue("Fecha");
                 rowinit.createCell(cellinit++).setCellValue("Metodo");
-                rowinit.createCell(cellinit++).setCellValue("Causa del error");
+                rowinit.createCell(cellinit++).setCellValue("Causa");
                 for (Auditoria a : auditorias) {
                     Row row2 = auditoriaSheet.createRow(++rowIndex);
                     int cellIndex = 0;
@@ -209,6 +219,94 @@ public class MbReportes implements Serializable {
             } else {
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
             }
+        }
+    }
+
+    public void cargaDatoXPRoyecto() throws FileNotFoundException, IOException {
+        if (verificarFormulario()) {
+            List<ProyectoXSensor> pxses = cb.getByOneField(ProyectoXSensor.class, "proyecto.id", idProye);
+            List<Sensor> sensores = new ArrayList<>();
+            for (ProyectoXSensor pxs : pxses) {
+                System.out.println("Sensor " + pxs.getSensor().getId());
+                sensores.add(pxs.getSensor());
+            }
+            List<DatosSensor> dses = ls.obtenerDatos(sensores, fechainicio, fechafinal);
+            if (!dses.isEmpty()) {
+                Workbook workbook = new XSSFWorkbook();
+                Sheet auditoriaSheet = workbook.createSheet("datoSensor" + idSensor);
+                int rowIndex = 0;
+                Row rowinit = auditoriaSheet.createRow(rowIndex);
+                int cellinit = 0;
+                rowinit.createCell(cellinit++).setCellValue("Codigo Sensor");
+                rowinit.createCell(cellinit++).setCellValue("Tipo de sensor");
+                rowinit.createCell(cellinit++).setCellValue("Fecha recolecion");
+                rowinit.createCell(cellinit++).setCellValue("Fecha sincronizacion");
+                rowinit.createCell(cellinit++).setCellValue("Datos");
+                for (DatosSensor ds : dses) {
+                    Row row2 = auditoriaSheet.createRow(++rowIndex);
+                    int cellIndex = 0;
+                    row2.createCell(cellIndex++).setCellValue(ds.getSensor().getId());
+                    row2.createCell(cellIndex++).setCellValue(ds.getSensor().getTipoSensor().getNombre());
+                    row2.createCell(cellIndex++).setCellValue(ds.getFechaRecoleccion().toString());
+                    row2.createCell(cellIndex++).setCellValue(ds.getFechaSincronizacion().toString());
+                    row2.createCell(cellIndex++).setCellValue(Double.parseDouble(ds.getDato()));
+                }
+                servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+                String basePath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/usuario/archivo/");
+                String nameFile = "datoSensorXProyecto_" + idProye + ".xlsx";
+                String pathFile = basePath + File.separatorChar + nameFile;
+                System.out.println(pathFile);
+                FileOutputStream archivo = new FileOutputStream(pathFile);
+                workbook.write(archivo);
+                archivo.close();
+                String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
+                redirect(contextPath + "/usuario/archivo/" + nameFile);
+            } else {
+                mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
+            }
+        }
+    }
+
+    public void cargaDatoBasicoProyecto() throws FileNotFoundException, IOException {
+        if (verificarFormulario()) {
+            List<ProyectoXSensor> pxses = cb.getByOneField(ProyectoXSensor.class, "proyecto.id", idProye);
+            Workbook workbook = new XSSFWorkbook();
+            Sheet auditoriaSheet = workbook.createSheet("datoSensor" + idSensor);
+            int rowIndex = 0;
+            Row rowinit = auditoriaSheet.createRow(rowIndex);
+            int cellinit = 0;
+            rowinit.createCell(cellinit++).setCellValue("Codigo Sensor");
+            rowinit.createCell(cellinit++).setCellValue("Tipo de sensor");
+            rowinit.createCell(cellinit++).setCellValue("Estado");
+            rowinit.createCell(cellinit++).setCellValue("Latitud");
+            rowinit.createCell(cellinit++).setCellValue("Longitud");
+            rowinit.createCell(cellinit++).setCellValue("Codigo de proyecto padre");
+            rowinit.createCell(cellinit++).setCellValue("Nombre de proyecto padre");
+            rowinit.createCell(cellinit++).setCellValue("Descripcion de proyecto padre");
+            rowinit.createCell(cellinit++).setCellValue("Usuario creacion");
+            for (ProyectoXSensor pxs : pxses) {
+                Row row2 = auditoriaSheet.createRow(++rowIndex);
+                int cellIndex = 0;
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getId());
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getTipoSensor().getNombre());
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getEstadoDelSensor());
+                row2.createCell(cellIndex++).setCellValue(Double.parseDouble(pxs.getSensor().getLatitud()));
+                row2.createCell(cellIndex++).setCellValue(Double.parseDouble(pxs.getSensor().getLongitud()));
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getProyectoPadre().getId());
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getProyectoPadre().getNombre());
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getProyectoPadre().getDescripcion());
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getUsuarioCreacion());
+            }
+            servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String basePath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/usuario/archivo/");
+            String nameFile = "datoBasicoDeProyecto_" + idProye + ".xlsx";
+            String pathFile = basePath + File.separatorChar + nameFile;
+            System.out.println(pathFile);
+            FileOutputStream archivo = new FileOutputStream(pathFile);
+            workbook.write(archivo);
+            archivo.close();
+            String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
+            redirect(contextPath + "/usuario/archivo/" + nameFile);
         }
     }
 

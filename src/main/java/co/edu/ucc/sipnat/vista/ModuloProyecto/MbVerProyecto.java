@@ -157,7 +157,7 @@ public class MbVerProyecto implements Serializable {
         series1.setLabel("Codigo: " + id);
         for (DatosSensor dse : dses) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            series1.set(formatter.format(dse.getFechaRecoleccion()), Integer.parseInt(dse.getDato()));
+            series1.set(formatter.format(dse.getFechaRecoleccion()), Double.parseDouble(dse.getDato()));
         }
         return series1;
     }

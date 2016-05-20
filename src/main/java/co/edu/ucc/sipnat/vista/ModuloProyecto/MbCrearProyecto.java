@@ -152,16 +152,41 @@ public class MbCrearProyecto implements Serializable {
     }
 
     public void accionAgregarSensor(Sensor row) {
-        sensores.add(row);
-        sensoresYaCreado.remove(row);
+        if (sensores.isEmpty()) {
+            sensores.add(row);
+            sensoresYaCreado.remove(row);
+        } else {
+            Boolean verificacion = Boolean.TRUE;
+            for (Sensor sensore : sensores) {
+                if (sensore.getId().equals(row.getId())) {
+                    verificacion = Boolean.FALSE;
+                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Sensor ya asignado");
+                }
+            }
+            if (verificacion) {
+                sensores.add(row);
+                sensoresYaCreado.remove(row);
+            }
+        }
     }
 
     public void accionRemoverSensor(Sensor row) {
         if (row.getId() == null) {
             sensores.remove(row);
         } else {
-            sensores.remove(row);
-            sensoresYaCreado.add(row);
+            if (proyecto.getId() == null) {
+                sensores.remove(row);
+                sensoresYaCreado.add(row);
+            } else {
+                ProyectoXSensor pxs = lp.buscarRelacion(proyecto, row);
+                if (cb.remove(pxs)) {
+                    mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "Sensor retirado");
+                    sensores.remove(row);
+                    sensoresYaCreado.add(row);
+                } else {
+                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "No se pudo guarda");
+                }
+            }
         }
     }
 
@@ -228,14 +253,29 @@ public class MbCrearProyecto implements Serializable {
         } else {
             Proyecto p = (Proyecto) cb.getByOneFieldWithOneResult(Proyecto.class, "nombre", proyecto.getNombre());
             if (p != null) {
-                resultado = Boolean.FALSE;
-                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Nombre de proyecto ya exite");
+                if (!p.getId().equals(proyecto.getId())) {
+                    resultado = Boolean.FALSE;
+                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Nombre de proyecto ya exite");
+                }
             }
         }
 
         if (proyecto.getDescripcion().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Descricion");
+        }
+        
+        if (proyecto.getAlertaNivel1().trim().length() == 0) {
+            resultado = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nivel de alerta 1");
+        }
+        if (proyecto.getAlertaNivel2().trim().length() == 0) {
+            resultado = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nivel de alerta 2");
+        }
+        if (proyecto.getAlertaNivel3().trim().length() == 0) {
+            resultado = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nivel de alerta 3");
         }
         return resultado;
     }

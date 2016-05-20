@@ -29,11 +29,16 @@ public class LogicaSensor {
     @EJB
     private CommonsBean cb;
 
-    public List<DatosSensor> obtenerDatos(Long id){
+    public List<DatosSensor> obtenerDatos(Long id) {
         return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor.id =:s ORDER BY d.fechaCreacion DESC").setParameter("s", id).getResultList();
     }
-    public List<DatosSensor> obtenerDatos(Sensor s, Date fi, Date ff){    
+
+    public List<DatosSensor> obtenerDatos(Sensor s, Date fi, Date ff) {
         return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor =:s AND (d.fechaRecoleccion BETWEEN :fi AND :ff ) ORDER BY d.fechaRecoleccion ASC").setParameter("s", s).setParameter("fi", fi).setParameter("ff", ff).getResultList();
     }
-    
+
+    public List<DatosSensor> obtenerDatos(List<Sensor> s, Date fi, Date ff) {
+        return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor in (:s) AND (d.fechaRecoleccion BETWEEN :fi AND :ff ) ORDER BY d.fechaRecoleccion ASC").setParameter("s", s).setParameter("fi", fi).setParameter("ff", ff).getResultList();
+    }
+
 }

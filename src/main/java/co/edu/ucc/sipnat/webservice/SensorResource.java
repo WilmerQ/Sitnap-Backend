@@ -98,7 +98,59 @@ public class SensorResource {
                     return "1";//ya esta conectado verifique codigo enviado
                 }
             }
-
+        }
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/{codigoSensor}/{fecha}")
+    public String desconectar(@PathParam("codigoSensor") String codigoSensor, @PathParam("fecha") String fecha) throws Exception {
+        Auditoria auditoria;
+        if (codigoSensor.trim().length() == 0) {
+            auditoria = new Auditoria();
+            auditoria.setMetodo("desconectar");
+            auditoria.setCausaDelError("Dato esta vacio");
+            auditoria.setFechaYHoraDelaCausa(new Date());
+            cb.guardar(auditoria);
+            return "1"; //dato null
+        } else {
+            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigoSensor));
+            if (sensor == null) {
+                auditoria = new Auditoria();
+                auditoria.setMetodo("desconectar");
+                auditoria.setCausaDelError("Codigo erroneo: " + codigoSensor);
+                auditoria.setFechaYHoraDelaCausa(new Date());
+                cb.guardar(auditoria);
+                return "1"; //codigo de sensor erroneo
+            } else {
+                if (sensor.getEstadoDelSensor().equals("Conectado")) {
+                    sensor.setEstadoDelSensor("Desconectado");
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                    sensor.setFechaDeDesconexion(formatter.parse(fecha));
+                    if (cb.guardar(sensor)) {
+                        auditoria = new Auditoria();
+                        auditoria.setMetodo("Dar de alta");
+                        auditoria.setCausaDelError("Correcto " + sensor.getId());
+                        auditoria.setFechaYHoraDelaCausa(new Date());
+                        cb.guardar(auditoria);
+                        return "2";//correto
+                    } else {
+                        auditoria = new Auditoria();
+                        auditoria.setMetodo("desconectar");
+                        auditoria.setCausaDelError("Error interno en el ejb, codigo de sensor " + codigoSensor);
+                        auditoria.setFechaYHoraDelaCausa(new Date());
+                        cb.guardar(auditoria);
+                        return "1";//Error en el ejb
+                    }
+                } else {
+                    auditoria = new Auditoria();
+                    auditoria.setMetodo("desconectar");
+                    auditoria.setCausaDelError("no esta conectado verifique codigo enviado, Codigo sensor " + codigoSensor);
+                    auditoria.setFechaYHoraDelaCausa(new Date());
+                    cb.guardar(auditoria);
+                    return "1";//ya esta conectado verifique codigo enviado
+                }
+            }
         }
     }
 

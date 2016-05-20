@@ -21,6 +21,9 @@ public class Proyecto extends CamposComunesdeEntidad implements Serializable {
     private String nombre;
     @Column(columnDefinition = "TEXT")
     private String descripcion;
+    private String alertaNivel1;
+    private String alertaNivel2;
+    private String alertaNivel3;
     @ManyToOne
     private Usuario usuario;
     @Transient
@@ -56,5 +59,29 @@ public class Proyecto extends CamposComunesdeEntidad implements Serializable {
 
     public void setSelecionado(Boolean selecionado) {
         this.selecionado = selecionado;
-    }    
+    }   
+
+    public String getAlertaNivel1() {
+        return alertaNivel1;
+    }
+
+    public void setAlertaNivel1(String alertaNivel1) {
+        this.alertaNivel1 = alertaNivel1;
+    }
+
+    public String getAlertaNivel2() {
+        return alertaNivel2;
+    }
+
+    public void setAlertaNivel2(String alertaNivel2) {
+        this.alertaNivel2 = alertaNivel2;
+    }
+
+    public String getAlertaNivel3() {
+        return alertaNivel3;
+    }
+
+    public void setAlertaNivel3(String alertaNivel3) {
+        this.alertaNivel3 = alertaNivel3;
+    }
 }

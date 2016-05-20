@@ -6,8 +6,10 @@
 package co.edu.ucc.sipnat.modelo;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -19,6 +21,8 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     private String latitud;
     private String longitud;
     private String estadoDelSensor;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaDeDesconexion;
     @ManyToOne
     private TipoSensor tipoSensor;
     @ManyToOne
@@ -73,4 +77,14 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     public void setProyectoPadre(Proyecto proyectoPadre) {
         this.proyectoPadre = proyectoPadre;
     }   
+
+    public Date getFechaDeDesconexion() {
+        return fechaDeDesconexion;
+    }
+
+    public void setFechaDeDesconexion(Date fechaDeDesconexion) {
+        this.fechaDeDesconexion = fechaDeDesconexion;
+    }
+    
+    
 }

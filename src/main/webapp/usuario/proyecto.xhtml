@@ -52,13 +52,13 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-5 col-md-5">
                             <div class="row col-no-gutter-container row-margin-top">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Mapa</div>
                                     <div class="panel-body">
                                         <div class="col-md-12">
-                                            <p:gmap id="gmap" center="11.247141, -74.205504" zoom="13" type="ROADMAP"  model="#{MbCrearProyecto.draggableModel}" style="width:100%;height:299px">
+                                            <p:gmap id="gmap" center="11.247141, -74.205504" zoom="13" type="ROADMAP"  model="#{MbCrearProyecto.draggableModel}" style="width:100%;height:325px">
                                                 <p:ajax event="markerDrag" listener="#{MbCrearProyecto.onMarkerDrag}" update=":form" />
                                             </p:gmap>
                                         </div>
@@ -66,8 +66,106 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Datos del proyecto</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">
+                                            <label class="col-lg-4 control-label">Nombre</label>
+                                            <div class="col-lg-8">
+                                                <p:inputText styleClass="form-control" placeholder="Nombre" value="#{MbCrearProyecto.proyecto.nombre}" />
+                                            </div>
+                                            <label class="col-lg-4 control-label">Descripcion</label>
+                                            <div class="col-lg-8">
+                                                <p:inputText styleClass="form-control" placeholder="Descripcion" value="#{MbCrearProyecto.proyecto.descripcion}" />
+                                            </div> 
+                                            <div class="col-lg-12">
+                                                <br/>
+                                            </div>
+                                            <label class="col-lg-12 control-label">Niveles de alerta</label>
+                                            <label class="col-lg-4 control-label">Nivel 1</label>
+                                            <div class="col-lg-8">
+                                                <p:inputText styleClass="form-control" placeholder="Nivel 1" value="#{MbCrearProyecto.proyecto.alertaNivel1}" />
+                                            </div>
+                                            <label class="col-lg-4 control-label">Nivel 2</label>
+                                            <div class="col-lg-8">
+                                                <p:inputText styleClass="form-control" placeholder="Nivel 2" value="#{MbCrearProyecto.proyecto.alertaNivel2}" />
+                                            </div> 
+                                            <label class="col-lg-4 control-label">Nivel 3</label>
+                                            <div class="col-lg-8">
+                                                <p:inputText styleClass="form-control" placeholder="Nivel 3" value="#{MbCrearProyecto.proyecto.alertaNivel3}" />
+                                            </div> 
+                                            <div class="col-lg-12">
+                                                <br/>
+                                            </div>
+                                            <div style="float: right">
+                                                <p:commandButton value="Guardar" action="#{MbCrearProyecto.accionGuarda()}" update=":form"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div class="col-lg-3 col-md-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Sensor ya existente</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">                                  
+                                            <p:dataTable  var="row" value="#{MbCrearProyecto.sensoresYaCreado}" paginator="true" rows="5" paginatorPosition="bottom">
+                                                <p:column headerText="Codigo" style="width: 22%">
+                                                    <h:outputText rendered="#{row.id != null}" value="#{row.id}" />
+                                                    <h:outputText rendered="#{row.id == null}" value="Por asignar" />
+                                                </p:column>
+                                                <p:column headerText="Icono" style="width: 12%">
+                                                    <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 
+                                                </p:column>
+                                                <p:column  style="width: 8%">
+                                                    <p:commandLink  action="#{MbCrearProyecto.accionVerSensor(row)}" update="form">
+                                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                                    </p:commandLink>
+                                                </p:column>
+                                                <p:column  style="width: 8%">
+                                                    <p:commandLink  action="#{MbCrearProyecto.accionAgregarSensor(row)}" update="form">
+                                                        <span class="glyphicon glyphicon-arrow-up"></span>
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5">
+                            <div class="row col-no-gutter-container row-margin-top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Sensor</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">
+                                            <label class="col-lg-2 control-label">Latitud</label>
+                                            <div class="col-lg-4">
+                                                <p:inputText styleClass="form-control" placeholder="Latitud" value="#{MbCrearProyecto.latitud}" />
+                                            </div>
+                                            <label class="col-lg-2 control-label">Longitud</label>
+                                            <div class="col-lg-4">
+                                                <p:inputText styleClass="form-control" placeholder="Longitud" value="#{MbCrearProyecto.longitud}" />
+                                            </div> 
+                                            <div class="col-lg-12">
+                                                <br/>
+                                            </div>
+                                            <div style="float: right">
+                                                <p:commandButton value="Asignar" action="#{MbCrearProyecto.accionAsignarSensor()}" update=":form"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
                             <div class="row col-no-gutter-container row-margin-top">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Sensores asignado
@@ -104,88 +202,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3">
-                            <div class="row col-no-gutter-container row-margin-top">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Sensor ya existente</div>
-                                    <div class="panel-body">
-                                        <div class="col-md-12">                                  
-                                            <p:dataTable  var="row" value="#{MbCrearProyecto.sensoresYaCreado}" paginator="true" rows="5" paginatorPosition="bottom">
-                                                <p:column headerText="Codigo" style="width: 22%">
-                                                    <h:outputText rendered="#{row.id != null}" value="#{row.id}" />
-                                                    <h:outputText rendered="#{row.id == null}" value="Por asignar" />
-                                                </p:column>
-                                                <p:column headerText="Icono" style="width: 12%">
-                                                    <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 
-                                                </p:column>
-                                                <p:column  style="width: 8%">
-                                                    <p:commandLink  action="#{MbCrearProyecto.accionVerSensor(row)}" update="form">
-                                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                                    </p:commandLink>
-                                                </p:column>
-                                                <p:column  style="width: 8%">
-                                                    <p:commandLink  action="#{MbCrearProyecto.accionAgregarSensor(row)}" update="form">
-                                                        <span class="glyphicon glyphicon-arrow-up"></span>
-                                                    </p:commandLink>
-                                                </p:column>
-                                            </p:dataTable>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="row col-no-gutter-container row-margin-top">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Sensor</div>
-                                    <div class="panel-body">
-                                        <div class="col-md-12">
-                                            <label class="col-lg-3 control-label">Latitud</label>
-                                            <div class="col-lg-3">
-                                                <p:inputText styleClass="form-control" placeholder="Latitud" value="#{MbCrearProyecto.latitud}" />
-                                            </div>
-                                            <label class="col-lg-3 control-label">Longitud</label>
-                                            <div class="col-lg-3">
-                                                <p:inputText styleClass="form-control" placeholder="Longitud" value="#{MbCrearProyecto.longitud}" />
-                                            </div> 
-                                            <div class="col-lg-12">
-                                                <br/>
-                                            </div>
-                                            <div style="float: right">
-                                                <p:commandButton value="Asignar" action="#{MbCrearProyecto.accionAsignarSensor()}" update=":form"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3">
-                            <div class="row col-no-gutter-container row-margin-top">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Datos del proyecto</div>
-                                    <div class="panel-body">
-                                        <div class="col-md-12">
-                                            <label class="col-lg-5 control-label">Nombre</label>
-                                            <div class="col-lg-7">
-                                                <p:inputText styleClass="form-control" placeholder="Nombre" value="#{MbCrearProyecto.proyecto.nombre}" />
-                                            </div>
-                                            <label class="col-lg-5 control-label">Descripcion</label>
-                                            <div class="col-lg-7">
-                                                <p:inputText styleClass="form-control" placeholder="Descripcion" value="#{MbCrearProyecto.proyecto.descripcion}" />
-                                            </div> 
-                                            <div class="col-lg-12">
-                                                <br/>
-                                            </div>
-                                            <div style="float: right">
-                                                <p:commandButton value="Guardar" action="#{MbCrearProyecto.accionGuarda()}" update=":form"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
                 <!-- /#page-wrapper -->
