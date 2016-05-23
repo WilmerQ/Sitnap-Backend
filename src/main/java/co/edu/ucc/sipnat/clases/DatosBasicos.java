@@ -10,6 +10,6 @@ package co.edu.ucc.sipnat.clases;
  * @author Windows 8.1
  */
 public class DatosBasicos {
-    public static String ip = "54.210.41.121";    
+    public static String ip = "54.165.89.80";    
     //public static String ip = "localhost";    
 }

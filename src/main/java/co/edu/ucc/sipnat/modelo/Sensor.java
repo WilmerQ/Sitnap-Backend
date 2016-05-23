@@ -6,6 +6,7 @@
 package co.edu.ucc.sipnat.modelo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -27,6 +28,7 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     private TipoSensor tipoSensor;
     @ManyToOne
     private Proyecto proyectoPadre;
+    private BigDecimal promedio;
      
     public String getCodigoHexadecimal() {
         return codigoHexadecimal;
@@ -85,6 +87,12 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     public void setFechaDeDesconexion(Date fechaDeDesconexion) {
         this.fechaDeDesconexion = fechaDeDesconexion;
     }
-    
-    
+
+    public BigDecimal getPromedio() {
+        return promedio;
+    }
+
+    public void setPromedio(BigDecimal promedio) {
+        this.promedio = promedio;
+    }  
 }

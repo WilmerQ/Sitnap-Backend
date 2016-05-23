@@ -6,6 +6,7 @@
 package co.edu.ucc.sipnat.webservice;
 
 import co.edu.ucc.sipnat.logica.CommonsBean;
+import co.edu.ucc.sipnat.logica.LogicaAlerta;
 import co.edu.ucc.sipnat.modelo.Auditoria;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
@@ -36,6 +37,9 @@ public class SensorResource {
 
     @EJB
     private CommonsBean cb;
+
+    @EJB
+    private LogicaAlerta la;
 
     /**
      * Creates a new instance of SensorResource
@@ -100,7 +104,7 @@ public class SensorResource {
             }
         }
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/{codigoSensor}/{fecha}")
@@ -176,7 +180,7 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigo));
+            final Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigo));
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("Obteniendo dato");
@@ -195,7 +199,16 @@ public class SensorResource {
                         ds.setFechaSincronizacion(new Date());
                         ds.setHoraDeRecoleccion(horaRecoleccion);
                         ds.setSensor(sensor);
+                        ds.setRevisado(Boolean.FALSE);
                         if (cb.guardar(ds)) {
+                            final Sensor s = sensor;
+                            final DatosSensor ds1 = ds;
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    la.accionMandarAlarta(s, ds1);
+                                }
+                            }).start();
                             return "2";//correto
                         } else {
                             auditoria = new Auditoria();

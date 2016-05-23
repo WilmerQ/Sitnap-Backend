@@ -78,6 +78,22 @@ public class UsuarioResource {
             return g.toJson(usuario);
         }
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/{id}")
+    public String getUsuario(@PathParam("id") String id) {
+        Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
+        Usuario usuario = (Usuario) cb.getById(Usuario.class, new Long(id));
+        if (usuario == null) {
+            usuario = new Usuario();
+            usuario.setInformeDeError(1);
+            return g.toJson(usuario);
+        } else {
+            usuario.setInformeDeError(2);
+            return g.toJson(usuario);
+        }
+    }
 
     /**
      *
