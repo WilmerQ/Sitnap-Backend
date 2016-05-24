@@ -206,6 +206,7 @@ public class SensorResource {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    System.out.println("Ejecutando alarta");
                                     la.accionMandarAlarta(s, ds1);
                                 }
                             }).start();

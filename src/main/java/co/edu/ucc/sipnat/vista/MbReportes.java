@@ -6,8 +6,10 @@
 package co.edu.ucc.sipnat.vista;
 
 import co.edu.ucc.sipnat.logica.CommonsBean;
+import co.edu.ucc.sipnat.logica.LogicaAlerta;
 import co.edu.ucc.sipnat.logica.LogicaAuditoria;
 import co.edu.ucc.sipnat.logica.LogicaSensor;
+import co.edu.ucc.sipnat.modelo.Alerta;
 import co.edu.ucc.sipnat.modelo.Auditoria;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Proyecto;
@@ -57,6 +59,7 @@ public class MbReportes implements Serializable {
     private Boolean sensor;
     private Boolean auditoria;
     private Boolean sensoresXProyecto;
+    private Boolean alertas;
     private List<SelectItem> proyectoItems;
 
     @EJB
@@ -67,6 +70,9 @@ public class MbReportes implements Serializable {
 
     @EJB
     private LogicaSensor ls;
+
+    @EJB
+    private LogicaAlerta lalerta;
 
     @Context
     private ServletContext servletContext;
@@ -88,6 +94,7 @@ public class MbReportes implements Serializable {
         sensor = Boolean.FALSE;
         auditoria = Boolean.FALSE;
         sensoresXProyecto = Boolean.FALSE;
+        alertas = Boolean.FALSE;
         proyectoItems = new LinkedList<>();
         List<Proyecto> proyectos = cb.getAll(Proyecto.class, "ORDER BY o.id");
         for (Proyecto p : proyectos) {
@@ -108,18 +115,28 @@ public class MbReportes implements Serializable {
                 sensor = Boolean.TRUE;
                 auditoria = Boolean.FALSE;
                 sensoresXProyecto = Boolean.FALSE;
+                alertas = Boolean.FALSE;
                 break;
             case "auditoria":
                 proyecto = Boolean.FALSE;
                 sensor = Boolean.FALSE;
                 auditoria = Boolean.TRUE;
                 sensoresXProyecto = Boolean.FALSE;
+                alertas = Boolean.FALSE;
                 break;
             case "sensores":
                 proyecto = Boolean.FALSE;
                 sensor = Boolean.FALSE;
                 auditoria = Boolean.FALSE;
                 sensoresXProyecto = Boolean.TRUE;
+                alertas = Boolean.FALSE;
+                break;
+            case "alerta":
+                proyecto = Boolean.FALSE;
+                sensor = Boolean.FALSE;
+                auditoria = Boolean.FALSE;
+                sensoresXProyecto = Boolean.FALSE;
+                alertas = Boolean.TRUE;
                 break;
         }
     }
@@ -171,6 +188,19 @@ public class MbReportes implements Serializable {
         }
 
         if (auditoria) {
+            if (fechafinal == null) {
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue fecha final");
+                res = Boolean.FALSE;
+            }
+
+            if (fechafinal == null) {
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue fecha inicio");
+                res = Boolean.FALSE;
+
+            }
+        }
+
+        if (alertas) {
             if (fechafinal == null) {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue fecha final");
                 res = Boolean.FALSE;
@@ -307,6 +337,47 @@ public class MbReportes implements Serializable {
             archivo.close();
             String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
             redirect(contextPath + "/usuario/archivo/" + nameFile);
+        }
+    }
+
+    public void cargaDatoAlerta() throws FileNotFoundException, IOException {
+        if (verificarFormulario()) {
+            List<Alerta> alertas = lalerta.alertas(fechainicio, fechafinal);
+            if (!alertas.isEmpty()) {
+                Workbook workbook = new XSSFWorkbook();
+                Sheet auditoriaSheet = workbook.createSheet("Alertas");
+                int rowIndex = 0;
+                Row rowinit = auditoriaSheet.createRow(rowIndex);
+                int cellinit = 0;
+                rowinit.createCell(cellinit++).setCellValue("Codigo Alerta");
+                rowinit.createCell(cellinit++).setCellValue("Nivel");
+                rowinit.createCell(cellinit++).setCellValue("Descripcion");
+                rowinit.createCell(cellinit++).setCellValue("Codigo de proyecto");
+                rowinit.createCell(cellinit++).setCellValue("Fecha de disparo");
+                rowinit.createCell(cellinit++).setCellValue("Hora de disparo");
+                for (Alerta a : alertas) {
+                    Row row2 = auditoriaSheet.createRow(++rowIndex);
+                    int cellIndex = 0;
+                    row2.createCell(cellIndex++).setCellValue(a.getId());
+                    row2.createCell(cellIndex++).setCellValue(a.getNivel());
+                    row2.createCell(cellIndex++).setCellValue(a.getDescripcion());
+                    row2.createCell(cellIndex++).setCellValue(a.getProyecto().getId());
+                    row2.createCell(cellIndex++).setCellValue(a.getFechaDelDisparo().toString());
+                    row2.createCell(cellIndex++).setCellValue(a.getHoraDelDisparo().toString());
+                }
+                servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+                String basePath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/usuario/archivo/");
+                String nameFile = "alerta.xlsx";
+                String pathFile = basePath + File.separatorChar + nameFile;
+                System.out.println(pathFile);
+                FileOutputStream archivo = new FileOutputStream(pathFile);
+                workbook.write(archivo);
+                archivo.close();
+                String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
+                redirect(contextPath + "/usuario/archivo/" + nameFile);
+            } else {
+                mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
+            }
         }
     }
 
@@ -447,4 +518,14 @@ public class MbReportes implements Serializable {
     public void setProyectoItems(List<SelectItem> proyectoItems) {
         this.proyectoItems = proyectoItems;
     }
+
+    public Boolean getAlertas() {
+        return alertas;
+    }
+
+    public void setAlertas(Boolean alertas) {
+        this.alertas = alertas;
+    }
+    
+    
 }

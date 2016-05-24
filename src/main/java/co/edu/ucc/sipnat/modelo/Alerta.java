@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 
 /**
  *
@@ -27,6 +28,10 @@ public class Alerta extends CamposComunesdeEntidad implements Serializable {
     private Date fechaDelDisparo;
     @Temporal(javax.persistence.TemporalType.TIME)
     private Date horaDelDisparo;
+    private String dato;
+    private String nivel;
+    @Transient
+    private String codigoColor;
 
     public Proyecto getProyecto() {
         return proyecto;
@@ -59,7 +64,28 @@ public class Alerta extends CamposComunesdeEntidad implements Serializable {
     public void setHoraDelDisparo(Date horaDelDisparo) {
         this.horaDelDisparo = horaDelDisparo;
     }
-    
-    
 
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
+    }
+
+    public String getDato() {
+        return dato;
+    }
+
+    public void setDato(String dato) {
+        this.dato = dato;
+    }
+
+    public String getCodigoColor() {
+        return codigoColor;
+    }
+
+    public void setCodigoColor(String codigoColor) {
+        this.codigoColor = codigoColor;
+    }
 }

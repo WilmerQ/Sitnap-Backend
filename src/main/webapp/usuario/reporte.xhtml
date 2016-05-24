@@ -35,6 +35,10 @@
                                             <h3>Historico</h3>
                                             <ul>
                                                 <li>
+                                                    <p:commandLink value="Alerta" update="params"
+                                                                   action="#{MbReportes.cargaFormulario('alerta')}" />
+                                                </li>
+                                                <li>
                                                     <p:commandLink value="Auditoria" update="params"
                                                                    action="#{MbReportes.cargaFormulario('auditoria')}" />
                                                 </li>
@@ -66,6 +70,22 @@
                                     <div class="panel-body">
                                         <div class="col-md-12"> 
                                             <h:panelGroup id="params">
+                                                <h:panelGroup rendered="#{MbReportes.alertas}">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-5 control-label">Fecha Inicial</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechainicio}" locale="es" />
+                                                        </div>
+                                                        <label class="col-lg-5 control-label">Fecha Final</label>
+                                                        <div class="col-lg-7">
+                                                            <p:calendar value="#{MbReportes.fechafinal}" locale="es" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <p:commandButton value="Generar" action="#{MbReportes.cargaDatoAlerta()}"
+                                                                         styleClass="btn btn-primary" style="float: right" id="btnalerta" update=":form" />
+                                                    </div>
+                                                </h:panelGroup>
                                                 <h:panelGroup rendered="#{MbReportes.auditoria}">
                                                     <div class="form-group">
                                                         <label class="col-lg-5 control-label">Fecha Inicial</label>

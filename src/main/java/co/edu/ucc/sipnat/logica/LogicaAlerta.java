@@ -49,16 +49,15 @@ public class LogicaAlerta {
     //mensaje a mandar.
     public static final String MESSAGE_VALUE = "Esto es una alerta!";
     public static final String MESSAGE_KEY = "message";
-    //id de los telefono registrado.
-    public static final String REG_ID = "APA91bHLom3jahCWOw7N8ow9lJ3Jm9E9EskMkomSvK319HLga2Lxcy7RzCVREaPy2It-xFt0TC-QINH4Xl4vF54gg5xpEp57RncIo9okFQMxhvl0LBhXm8elS4FAteUkCE15AlQ_dMOby5q4oejDszhENgwSvH4Sjg";
-    public static final String REG_ID2 = "APA91bEiQrfLNBdqvs04qvCJX8-mtCAK_jWkOlnzcP6WHZckc7e-7VKkasuY91GDZ453puiPSqbLHW-w2kET4eYqX3c1I11TuXM6Ts7-t-ZCFLkUvSIzeZ89LStOIgA_QdkmdLmNFCkEVb8iqG0KejFJZ2X2SaPDDQ";
 
     //Simulacion de prueba para mandar una notificacion a la app movil.
     public void accionMandarAlarta(Sensor s, DatosSensor dato) {
+        System.out.println("En el metodo");
         Boolean mandarAlerta = Boolean.FALSE;
         int nivel = 0;
         if (s.getPromedio() == null) {
-            Long cantidad = obtenerCantidadSinRevisar();
+            Long cantidad = obtenerCantidad(s);
+            System.out.println("Cantidad " + cantidad);
             if (cantidad >= 100) {
                 List<DatosSensor> dses = obtenerDatosDeSensores(s);
                 BigDecimal promedio = BigDecimal.ZERO;
@@ -79,6 +78,8 @@ public class LogicaAlerta {
             resultado = new BigDecimal(dato.getDato()).divide(s.getPromedio(), 2, RoundingMode.HALF_UP);
             resultado = resultado.multiply(new BigDecimal(100));
             System.out.println("Resultado es " + resultado + "%");
+            dato.setRevisado(Boolean.TRUE);
+            cb.guardar(dato);
             Double res = new Double(resultado.toString());
             if (res < 70 && res > 50) {
                 System.out.println("Nivel 1");
@@ -92,6 +93,18 @@ public class LogicaAlerta {
                 System.out.println("Nivel 3");
                 nivel = 3;
                 mandarAlerta = Boolean.TRUE;
+            } else if (res > 130 && res < 150) {
+                System.out.println("Nivel 1");
+                nivel = 1;
+                mandarAlerta = Boolean.TRUE;
+            } else if (res > 150 && res < 170) {
+                System.out.println("Nivel 2");
+                nivel = 2;
+                mandarAlerta = Boolean.TRUE;
+            } else if (res > 171) {
+                System.out.println("Nivel 3");
+                nivel = 3;
+                mandarAlerta = Boolean.TRUE;
             }
         }
         if (mandarAlerta) {
@@ -102,16 +115,24 @@ public class LogicaAlerta {
                     alerta.setProyecto(pxse.getProyecto());
                     alerta.setFechaDelDisparo(new Date());
                     alerta.setHoraDelDisparo(new Date());
+                    alerta.setNivel("Alerta de nivel " + nivel);
+                    alerta.setDato(dato.getDato());
+
                     if (nivel == 1) {
-                        alerta.setDescripcion("Alerta de nivel " + nivel + ": " + pxse.getProyecto().getAlertaNivel1() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Registro datos por debajo del promedio.");
+                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel1() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Dato capturado: " + dato.getDato());
+                        alerta.setCodigoColor("#fff176");
                     } else if (nivel == 2) {
-                        alerta.setDescripcion("Alerta de nivel " + nivel + ": " + pxse.getProyecto().getAlertaNivel2() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Registro datos por debajo del promedio.");
+                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel2() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Dato capturado: " + dato.getDato());
+                        alerta.setCodigoColor("#ffa726");
                     } else if (nivel == 3) {
-                        alerta.setDescripcion("Alerta de nivel " + nivel + ": " + pxse.getProyecto().getAlertaNivel3() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Registro datos por debajo del promedio.");
+                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel3() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Dato capturado: " + dato.getDato());
+                        alerta.setCodigoColor("#ef5350");
                     }
+
                     if (cb.guardar(alerta)) {
                         Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
                         String mensaje = g.toJson(alerta);
+                        System.out.println("Json " + mensaje);
                         List<Dispositivo> ds = cb.getByOneField(Dispositivo.class, "proyecto", pxse.getProyecto());
                         ArrayList<String> devicesList = new ArrayList<>();
                         for (Dispositivo d : ds) {
@@ -123,6 +144,8 @@ public class LogicaAlerta {
                         sender.send(message, devicesList, 1);
                         System.out.println("Resultado: " + result.toString());
                     }
+                    s.setPromedio(null);
+                    cb.guardar(s);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -130,11 +153,20 @@ public class LogicaAlerta {
         }
     }
 
-    private Long obtenerCantidadSinRevisar() {
-        return (Long) em.createQuery("SELECT COUNT(ds.revisado) FROM DatosSensor ds WHERE ds.revisado = false").getSingleResult();
+    private Long obtenerCantidad(Sensor s) {
+        try {
+            return (Long) em.createQuery("SELECT COUNT(ds.sensor) FROM DatosSensor ds WHERE ds.sensor = :s").setParameter("s", s).getSingleResult();
+        } catch (Exception e) {
+            return 0L;
+        }
+
     }
 
     private List<DatosSensor> obtenerDatosDeSensores(Sensor s) {
-        return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor =:s and d.revisado = false").setParameter("s", s).getResultList();
+        return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor =:s").setParameter("s", s).getResultList();
+    }
+
+    public List<Alerta> alertas(Date fi, Date ff) {
+        return em.createQuery("SELECT a FROM Alerta a WHERE a.fechaDelDisparo BETWEEN :fi AND :ff").setParameter("fi", fi).setParameter("ff", ff).getResultList();
     }
 }
