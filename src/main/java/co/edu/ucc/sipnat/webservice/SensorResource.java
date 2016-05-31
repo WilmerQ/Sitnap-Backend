@@ -5,13 +5,20 @@
  */
 package co.edu.ucc.sipnat.webservice;
 
+import co.edu.ucc.sipnat.base.GsonExcludeListStrategy;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaAlerta;
 import co.edu.ucc.sipnat.modelo.Auditoria;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Context;
@@ -47,6 +54,19 @@ public class SensorResource {
     public SensorResource() {
     }
 
+    @GET
+    @Produces("application/json")
+    public String getSensores() {
+        List<Sensor> sensores = cb.getAll(Sensor.class);
+        List<co.edu.ucc.sipnat.clases.Sensor> listSensores = new ArrayList<>();
+        for (Sensor sensore : sensores) {
+            co.edu.ucc.sipnat.clases.Sensor s = new co.edu.ucc.sipnat.clases.Sensor(sensore);
+            listSensores.add(s);
+        }
+        Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
+        return g.toJson(listSensores);
+    }
+
     /**
      * Retrieves representation of an instance of
      * co.edu.ucc.sipnat.base.SensorResource
@@ -67,7 +87,18 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigoSensor));
+            Long id = 0L;
+            try {
+                id = new Long(codigoSensor);
+            } catch (Exception e) {
+                auditoria = new Auditoria();
+                auditoria.setMetodo("Dar de alta");
+                auditoria.setCausaDelError("Codigo debe ser numerico: " + codigoSensor);
+                auditoria.setFechaYHoraDelaCausa(new Date());
+                cb.guardar(auditoria);
+                return "1";
+            }
+            Sensor sensor = (Sensor) cb.getById(Sensor.class, id);
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("Dar de alta");
@@ -81,7 +112,7 @@ public class SensorResource {
                     if (cb.guardar(sensor)) {
                         auditoria = new Auditoria();
                         auditoria.setMetodo("Dar de alta");
-                        auditoria.setCausaDelError("Correcto " + sensor.getId());
+                        auditoria.setCausaDelError("Correcto, se ha conectado sensor: " + sensor.getId());
                         auditoria.setFechaYHoraDelaCausa(new Date());
                         cb.guardar(auditoria);
                         return "2";//correto
@@ -118,7 +149,18 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigoSensor));
+            Long id = 0L;
+            try {
+                id = new Long(codigoSensor);
+            } catch (Exception e) {
+                auditoria = new Auditoria();
+                auditoria.setMetodo("desconectar");
+                auditoria.setCausaDelError("Codigo debe ser numerico: " + codigoSensor);
+                auditoria.setFechaYHoraDelaCausa(new Date());
+                cb.guardar(auditoria);
+                return "1";
+            }
+            Sensor sensor = (Sensor) cb.getById(Sensor.class, id);
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("desconectar");
@@ -128,23 +170,33 @@ public class SensorResource {
                 return "1"; //codigo de sensor erroneo
             } else {
                 if (sensor.getEstadoDelSensor().equals("Conectado")) {
-                    sensor.setEstadoDelSensor("Desconectado");
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                    sensor.setFechaDeDesconexion(formatter.parse(fecha));
-                    if (cb.guardar(sensor)) {
-                        auditoria = new Auditoria();
-                        auditoria.setMetodo("Dar de alta");
-                        auditoria.setCausaDelError("Correcto " + sensor.getId());
-                        auditoria.setFechaYHoraDelaCausa(new Date());
-                        cb.guardar(auditoria);
-                        return "2";//correto
+                    if (verificarFecha(fecha)) {
+                        sensor.setEstadoDelSensor("Desconectado");
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                        sensor.setFechaDeDesconexion(formatter.parse(fecha));
+                        if (cb.guardar(sensor)) {
+                            auditoria = new Auditoria();
+                            auditoria.setMetodo("Desconectar");
+                            auditoria.setCausaDelError("Correcto, se ha desconectado sensor: " + sensor.getId());
+                            auditoria.setFechaYHoraDelaCausa(new Date());
+                            cb.guardar(auditoria);
+                            return "2";//correto
+                        } else {
+                            auditoria = new Auditoria();
+                            auditoria.setMetodo("desconectar");
+                            auditoria.setCausaDelError("Error interno en el ejb, codigo de sensor " + codigoSensor);
+                            auditoria.setFechaYHoraDelaCausa(new Date());
+                            cb.guardar(auditoria);
+                            return "1";//Error en el ejb
+                        }
+
                     } else {
                         auditoria = new Auditoria();
                         auditoria.setMetodo("desconectar");
-                        auditoria.setCausaDelError("Error interno en el ejb, codigo de sensor " + codigoSensor);
+                        auditoria.setCausaDelError("Error en formato de fecha: " + fecha + " Codigo sensor " + codigoSensor);
                         auditoria.setFechaYHoraDelaCausa(new Date());
                         cb.guardar(auditoria);
-                        return "1";//Error en el ejb
+                        return "1";
                     }
                 } else {
                     auditoria = new Auditoria();
@@ -180,7 +232,18 @@ public class SensorResource {
             cb.guardar(auditoria);
             return "1"; //dato null
         } else {
-            final Sensor sensor = (Sensor) cb.getById(Sensor.class, new Long(codigo));
+            Long id = 0L;
+            try {
+                id = new Long(codigo);
+            } catch (Exception e) {
+                auditoria = new Auditoria();
+                auditoria.setMetodo("Obteniendo dato");
+                auditoria.setCausaDelError("Codigo debe ser numerico: " + codigo);
+                auditoria.setFechaYHoraDelaCausa(new Date());
+                cb.guardar(auditoria);
+                return "1";
+            }
+            final Sensor sensor = (Sensor) cb.getById(Sensor.class, id);
             if (sensor == null) {
                 auditoria = new Auditoria();
                 auditoria.setMetodo("Obteniendo dato");
@@ -190,53 +253,154 @@ public class SensorResource {
                 return "1"; //codigo de sensor erroneo
             } else {
                 if (sensor.getEstadoDelSensor().equals("Conectado")) {
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                    DatosSensor ds = new DatosSensor();
-                    try {
-                        Double d = new Double(dato);
-                        ds.setDato(dato);
-                        ds.setFechaRecoleccion(formatter.parse(fechaRecoleccion + " " + horaRecoleccion));
-                        ds.setFechaSincronizacion(new Date());
-                        ds.setHoraDeRecoleccion(horaRecoleccion);
-                        ds.setSensor(sensor);
-                        ds.setRevisado(Boolean.FALSE);
-                        if (cb.guardar(ds)) {
-                            final Sensor s = sensor;
-                            final DatosSensor ds1 = ds;
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    System.out.println("Ejecutando alarta");
-                                    la.accionMandarAlarta(s, ds1);
+                    if (verificarFecha(fechaRecoleccion)) {
+                        if (verificarHora(horaRecoleccion)) {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            DatosSensor ds = new DatosSensor();
+                            try {
+                                Double d = new Double(dato);
+                                ds.setDato(dato);
+                                ds.setFechaRecoleccion(formatter.parse(fechaRecoleccion + " " + horaRecoleccion));
+                                ds.setFechaSincronizacion(new Date());
+                                ds.setHoraDeRecoleccion(horaRecoleccion);
+                                ds.setSensor(sensor);
+                                ds.setRevisado(Boolean.FALSE);
+                                if (cb.guardar(ds)) {
+                                    System.out.println("Dato ingresado: " + dato + " Fecha: "+ ds.getFechaRecoleccion() + " Sensor: " + sensor.getId());
+                                    final Sensor s = sensor;
+                                    final DatosSensor ds1 = ds;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            System.out.println("Ejecutando alarta");
+                                            la.accionMandarAlarta(s, ds1);
+                                        }
+                                    }).start();
+                                    return "2";//correto
+                                } else {
+                                    auditoria = new Auditoria();
+                                    auditoria.setMetodo("Obteniendo dato");
+                                    auditoria.setCausaDelError("Error en el ejb, codigo de sensor " + codigo);
+                                    auditoria.setFechaYHoraDelaCausa(new Date());
+                                    cb.guardar(auditoria);
+                                    return "1";//Error en el ejb
                                 }
-                            }).start();
-                            return "2";//correto
+                            } catch (Exception e) {
+                                auditoria = new Auditoria();
+                                auditoria.setMetodo("Obteniendo dato");
+                                auditoria.setCausaDelError("Error en el dato, el dato debe ser numerico, Codigo de sensor: " + codigo);
+                                auditoria.setFechaYHoraDelaCausa(new Date());
+                                cb.guardar(auditoria);
+                                return "1";//Error en el dato
+                            }
                         } else {
                             auditoria = new Auditoria();
                             auditoria.setMetodo("Obteniendo dato");
-                            auditoria.setCausaDelError("Error en el ejb, codigo de sensor " + codigo);
+                            auditoria.setCausaDelError("Error en formato de hora: " + horaRecoleccion + " Codigo sensor " + codigo);
                             auditoria.setFechaYHoraDelaCausa(new Date());
                             cb.guardar(auditoria);
-                            return "1";//Error en el ejb
+                            return "1";//Fecha mala
                         }
-                    } catch (Exception e) {
+                    } else {
                         auditoria = new Auditoria();
                         auditoria.setMetodo("Obteniendo dato");
-                        auditoria.setCausaDelError("Error en el dato, el dato debe ser numerico Codigo de sensor" + codigo);
+                        auditoria.setCausaDelError("Error en formato de fecha: " + fechaRecoleccion + " Codigo sensor " + codigo);
                         auditoria.setFechaYHoraDelaCausa(new Date());
                         cb.guardar(auditoria);
-                        return "1";//Error en el dato
+                        return "1";//Fecha mala
                     }
                 } else {
                     auditoria = new Auditoria();
                     auditoria.setMetodo("Obteniendo dato");
-                    auditoria.setCausaDelError("Codigo erroneo: " + codigo);
+                    auditoria.setCausaDelError("Sensor desconectado codigo: " + codigo);
                     auditoria.setFechaYHoraDelaCausa(new Date());
                     cb.guardar(auditoria);
                     return "1";//Sensor no conectado
                 }
             }
         }
+    }
+
+    private Boolean verificarFecha(String cadena) {
+        Boolean resultado = Boolean.TRUE;
+        String[] campos = cadena.split("-");
+        
+        if (campos.length != 3) {
+            resultado = Boolean.FALSE;
+        } else {
+        
+            if (campos[0].length() > 2 || campos[0].length() < 1) {
+                resultado = Boolean.FALSE;
+            } else {
+                try {
+                    Long nu = new Long(campos[0]);
+                } catch (Exception e) {
+                    resultado = Boolean.FALSE;
+                }
+            }
+        
+            if (campos[1].length() > 2 && campos[1].length() < 1) {
+                resultado = Boolean.FALSE;
+            } else {
+                try {
+                    Long nu = new Long(campos[1]);
+                } catch (Exception e) {
+                    resultado = Boolean.FALSE;
+                }
+            }
+        
+            if (campos[2].length() != 4) {
+                resultado = Boolean.FALSE;
+            } else {
+                try {
+                    Long nu = new Long(campos[2]);
+                } catch (Exception e) {
+                    resultado = Boolean.FALSE;
+                }
+            }
+        }
+        return resultado;
+    }
+
+    private Boolean verificarHora(String cadena) {
+        Boolean resultado = Boolean.TRUE;
+        String[] campos = cadena.split(":");
+        
+        if (campos.length != 3) {
+            resultado = Boolean.FALSE;
+        } else {
+        
+            if (campos[0].length() > 2 || campos[0].length() < 1) {
+                resultado = Boolean.FALSE;
+            } else {
+                try {
+                    Long nu = new Long(campos[0]);
+                } catch (Exception e) {
+                    resultado = Boolean.FALSE;
+                }
+            }
+        
+            if (campos[1].length() > 2 && campos[1].length() < 1) {
+                resultado = Boolean.FALSE;
+            } else {
+                try {
+                    Long nu = new Long(campos[1]);
+                } catch (Exception e) {
+                    resultado = Boolean.FALSE;
+                }
+            }
+        
+            if (campos[2].length() > 2 && campos[2].length() < 1) {
+                resultado = Boolean.FALSE;
+            } else {
+                try {
+                    Long nu = new Long(campos[2]);
+                } catch (Exception e) {
+                    resultado = Boolean.FALSE;
+                }
+            }
+        }
+        return resultado;
     }
 
     /**

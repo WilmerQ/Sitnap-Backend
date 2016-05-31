@@ -56,7 +56,7 @@ public class DatoResource {
     @Produces("application/json")
     @Path("/{id}")
     public String getJson(@PathParam("id") String id) {
-        List<DatosSensor> dses = cb.getByOneField(DatosSensor.class, "sensor.id", new Long(id));
+        List<DatosSensor> dses = cb.getByOneField(DatosSensor.class, "sensor.id", new Long(id),"ORDER BY o.fechaRecoleccion ASC");
         List<Dato> datos = new ArrayList<>();
         for (DatosSensor ds : dses) {
             datos.add(new Dato(ds));

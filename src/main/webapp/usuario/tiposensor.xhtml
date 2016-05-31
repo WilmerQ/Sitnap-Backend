@@ -34,32 +34,36 @@
                                     <div class="col-md-8">
                                         <label class="col-lg-4 control-label">Nombre</label>
                                         <div class="col-lg-8">
-                                            <p:inputText styleClass="form-control" placeholder="Nombre" value="#{MbTipoDeSensor.tipoSensor.nombre}" />
+                                            <p:inputText id="n" styleClass="form-control" placeholder="Nombre" value="#{MbTipoDeSensor.tipoSensor.nombre}" >
+                                                <p:ajax event="change"  process="@this" update="n" />
+                                            </p:inputText>
                                         </div>
                                         <label class="col-lg-4 control-label">Unidad de medida</label>
                                         <div class="col-lg-8">
-                                            <p:inputText styleClass="form-control" placeholder="Unidad de medida" value="#{MbTipoDeSensor.tipoSensor.unidadDeMedida}" />
+                                            <p:inputText id="u" styleClass="form-control" placeholder="Unidad de medida" value="#{MbTipoDeSensor.tipoSensor.unidadDeMedida}" >
+                                                <p:ajax event="change"  process="@this" update="u" />
+                                            </p:inputText>
                                         </div>
                                         <h:panelGroup id="panel">
-                                        <label class="col-lg-4 control-label">Icono</label>
-                                        <div class="col-lg-8">
-                                            <p:fileUpload id="img" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo == null}" fileUploadListener="#{MbTipoDeSensor.handleFileUpload}"
-                                                          dragDropSupport="false"  
-                                                          mode="advanced"
-                                                          multiple="true" 
-                                                          label="Seleccione Fotos"
-                                                          update=":form"
-                                                          sizeLimit="2000000"
-                                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
-                                                          cancelLabel="Cancelar" uploadLabel="Subir Archivos"/>
-                                        </div>
-                                        <div class="col-lg-8">
-                                            
-                                            <p:graphicImage id="graf" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{MbTipoDeSensor.tipoSensor.uuid}" style="width: 32px; height:32px" /> 
-                                            <p:commandLink id="icon" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" action="#{MbTipoDeSensor.bajarIcono()}" update="panel">
-                                                <span class="glyphicon glyphicon-remove"></span>
-                                            </p:commandLink>
-                                        </div>
+                                            <label class="col-lg-4 control-label">Icono</label>
+                                            <div class="col-lg-8">
+                                                <p:fileUpload id="img" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo == null}" fileUploadListener="#{MbTipoDeSensor.handleFileUpload}"
+                                                              dragDropSupport="false"  
+                                                              mode="advanced"
+                                                              multiple="true" 
+                                                              label="Seleccione Fotos"
+                                                              update=":form"
+                                                              sizeLimit="2000000"
+                                                              allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                                              cancelLabel="Cancelar" uploadLabel="Subir Archivos"/>
+                                            </div>
+                                            <div class="col-lg-8">
+
+                                                <p:graphicImage id="graf" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{MbTipoDeSensor.tipoSensor.uuid}" style="width: 32px; height:32px" /> 
+                                                <p:commandLink id="icon" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo != null}" action="#{MbTipoDeSensor.bajarIcono()}" update="panel">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </p:commandLink>
+                                            </div>
                                         </h:panelGroup>
                                         <div style="float: right; padding-top: 10px; padding-right: 10px">
                                             <p:commandButton value="Registrar" styleClass="btn btn-primary" action="#{MbTipoDeSensor.accionGuarda()}" update=":form" />

@@ -77,6 +77,8 @@ public class MbUsuarioCambioDeContraseña implements Serializable {
         if (verificarFormulario()) {
             usuario.setClave(Md5.getEncoddedString(claveNueva));
             if (cb.guardar(usuario)) {
+                Usuario u = (Usuario) cb.getById(Usuario.class, usuario.getId());
+                SessionOperations.setSessionValue("USUARIO", u);
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se ha cambiado la contraseña");
                 init();
             } else {

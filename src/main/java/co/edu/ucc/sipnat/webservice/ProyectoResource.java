@@ -62,6 +62,7 @@ public class ProyectoResource {
         return g.toJson(list);
     }
 
+    
     @GET
     @Produces("application/json")
     @Path("/{id}")

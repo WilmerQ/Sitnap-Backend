@@ -9,6 +9,7 @@ import co.edu.ucc.sipnat.base.GsonExcludeListStrategy;
 import co.edu.ucc.sipnat.modelo.Alerta;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Dispositivo;
+import co.edu.ucc.sipnat.modelo.PromedioDatoSensor;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import com.google.android.gcm.server.Message;
@@ -55,7 +56,8 @@ public class LogicaAlerta {
         System.out.println("En el metodo");
         Boolean mandarAlerta = Boolean.FALSE;
         int nivel = 0;
-        if (s.getPromedio() == null) {
+        PromedioDatoSensor pds = getPromedioDatoSensor(s);
+        if (pds == null) {
             Long cantidad = obtenerCantidad(s);
             System.out.println("Cantidad " + cantidad);
             if (cantidad >= 100) {
@@ -70,12 +72,14 @@ public class LogicaAlerta {
                 }
                 System.out.println("Suma sin dividir " + promedio);
                 promedio = promedio.divide(tamañoLista, 2, RoundingMode.HALF_UP);
-                s.setPromedio(promedio);
-                cb.guardar(s);
+                PromedioDatoSensor datoSensor = new PromedioDatoSensor();
+                datoSensor.setPromedio(promedio);
+                datoSensor.setSensor(s);
+                cb.guardar(datoSensor);
             }
         } else {
             BigDecimal resultado = BigDecimal.ZERO;
-            resultado = new BigDecimal(dato.getDato()).divide(s.getPromedio(), 2, RoundingMode.HALF_UP);
+            resultado = new BigDecimal(dato.getDato()).divide(pds.getPromedio(), 2, RoundingMode.HALF_UP);
             resultado = resultado.multiply(new BigDecimal(100));
             System.out.println("Resultado es " + resultado + "%");
             dato.setRevisado(Boolean.TRUE);
@@ -108,6 +112,21 @@ public class LogicaAlerta {
             }
         }
         if (mandarAlerta) {
+            List<DatosSensor> dses = obtenerDatosDeSensores(s);
+            BigDecimal promedio = BigDecimal.ZERO;
+            System.out.println("Tamaño de la lista " + dses.size());
+            BigDecimal tamañoLista = new BigDecimal(dses.size());
+            for (DatosSensor ds : dses) {
+                promedio = promedio.add(new BigDecimal(ds.getDato()));
+                ds.setRevisado(Boolean.TRUE);
+                cb.guardar(ds);
+            }
+            System.out.println("Suma sin dividir " + promedio);
+            promedio = promedio.divide(tamañoLista, 2, RoundingMode.HALF_UP);
+            PromedioDatoSensor datoSensor = new PromedioDatoSensor();
+            datoSensor.setPromedio(promedio);
+            datoSensor.setSensor(s);
+            cb.guardar(datoSensor);
             try {
                 List<ProyectoXSensor> pxses = cb.getByOneField(ProyectoXSensor.class, "sensor", s);
                 for (ProyectoXSensor pxse : pxses) {
@@ -119,13 +138,13 @@ public class LogicaAlerta {
                     alerta.setDato(dato.getDato());
 
                     if (nivel == 1) {
-                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel1() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Dato capturado: " + dato.getDato());
+                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel1());
                         alerta.setCodigoColor("#fff176");
                     } else if (nivel == 2) {
-                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel2() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Dato capturado: " + dato.getDato());
+                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel2());
                         alerta.setCodigoColor("#ffa726");
                     } else if (nivel == 3) {
-                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel3() + " Sensor de tipo " + s.getTipoSensor().getNombre() + " Dato capturado: " + dato.getDato());
+                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel3());
                         alerta.setCodigoColor("#ef5350");
                     }
 
@@ -134,18 +153,18 @@ public class LogicaAlerta {
                         String mensaje = g.toJson(alerta);
                         System.out.println("Json " + mensaje);
                         List<Dispositivo> ds = cb.getByOneField(Dispositivo.class, "proyecto", pxse.getProyecto());
-                        ArrayList<String> devicesList = new ArrayList<>();
-                        for (Dispositivo d : ds) {
-                            devicesList.add(d.getToken());
+                        if (!ds.isEmpty()) {
+                            ArrayList<String> devicesList = new ArrayList<>();
+                            for (Dispositivo d : ds) {
+                                devicesList.add(d.getToken());
+                            }
+                            Sender sender = new Sender(GCM_API_KEY);
+                            Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData(MESSAGE_KEY, mensaje).build();
+                            MulticastResult result = sender.send(message, devicesList, 1);
+                            sender.send(message, devicesList, 1);
+                            System.out.println("Resultado: " + result.toString());
                         }
-                        Sender sender = new Sender(GCM_API_KEY);
-                        Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData(MESSAGE_KEY, mensaje).build();
-                        MulticastResult result = sender.send(message, devicesList, 1);
-                        sender.send(message, devicesList, 1);
-                        System.out.println("Resultado: " + result.toString());
                     }
-                    s.setPromedio(null);
-                    cb.guardar(s);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -155,11 +174,19 @@ public class LogicaAlerta {
 
     private Long obtenerCantidad(Sensor s) {
         try {
-            return (Long) em.createQuery("SELECT COUNT(ds.sensor) FROM DatosSensor ds WHERE ds.sensor = :s").setParameter("s", s).getSingleResult();
+            return (Long) em.createQuery("SELECT COUNT(ds.sensor) FROM DatosSensor ds WHERE ds.sensor = :s AND ds.revisado = false").setParameter("s", s).getSingleResult();
         } catch (Exception e) {
             return 0L;
         }
+    }
 
+    private PromedioDatoSensor getPromedioDatoSensor(Sensor s) {
+        try {
+            Long id = (Long) em.createQuery("SELECT MAX(o.id)FROM PromedioDatoSensor o WHERE o.sensor = :s").setParameter("s", s).getSingleResult();
+            return (PromedioDatoSensor) cb.getById(PromedioDatoSensor.class, id);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private List<DatosSensor> obtenerDatosDeSensores(Sensor s) {

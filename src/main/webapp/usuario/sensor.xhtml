@@ -101,8 +101,11 @@
                                                 <p:column headerText="Logitud" style="width: 22%">
                                                     <h:outputText value="#{row.longitud}" />
                                                 </p:column>
-                                                <p:column headerText="Tipo de sensor" style="width: 22%">
-                                                    <h:outputText value="#{row.tipoSensor.nombre}" />
+                                                <p:column headerText="Logitud" style="width: 22%">
+                                                    <h:outputText value="#{row.longitud}" />
+                                                </p:column>
+                                                <p:column headerText="Estado" style="width: 22%">
+                                                    <h:outputText value="#{row.estadoDelSensor}" />
                                                 </p:column>         
                                                 <p:column headerText="Icono" style="width: 12%">
                                                     <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.tipoSensor.id}" style="width: 32px; height:32px" /> 

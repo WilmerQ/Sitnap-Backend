@@ -158,9 +158,11 @@ public class MbCrearProyecto implements Serializable {
         } else {
             Boolean verificacion = Boolean.TRUE;
             for (Sensor sensore : sensores) {
-                if (sensore.getId().equals(row.getId())) {
-                    verificacion = Boolean.FALSE;
-                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Sensor ya asignado");
+                if (sensore.getId() != null) {
+                    if (sensore.getId().equals(row.getId())) {
+                        verificacion = Boolean.FALSE;
+                        mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Sensor ya asignado");
+                    }
                 }
             }
             if (verificacion) {
@@ -264,7 +266,7 @@ public class MbCrearProyecto implements Serializable {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Descricion");
         }
-        
+
         if (proyecto.getAlertaNivel1().trim().length() == 0) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nivel de alerta 1");

@@ -52,7 +52,7 @@ public class MbUsuario implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nombre de usuario");
         } else {
             String[] campos = usuario.getNombreUsuario().split(" ");
-            if (campos.length == 0) {
+            if (campos.length == 1) {
                 Usuario u = (Usuario) cb.getByOneFieldWithOneResult(Usuario.class, "nombreUsuario", usuario.getNombreUsuario());
                 if (u != null) {
                     resultado = Boolean.FALSE;
@@ -69,18 +69,18 @@ public class MbUsuario implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue clave");
         } else {
             String[] campos = clave1.split(" ");
-            if (campos.length > 0) {
+            if (campos.length > 1) {
                 resultado = Boolean.FALSE;
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo clave  no permite espacio");
             }
         }
 
-        if (clave2.trim().length() == 0) {
+        if (clave2.trim().length() == 1) {
             resultado = Boolean.FALSE;
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue clave de confirmacion");
         }else{
             String[] campos = clave2.split(" ");
-            if (campos.length > 0) {
+            if (campos.length > 1) {
                 resultado = Boolean.FALSE;
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo clave de confirmacion no permite espacio");
             }
@@ -96,7 +96,7 @@ public class MbUsuario implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Email");
         }else{
             String[] campos = usuario.getEmail().split(" ");
-            if (campos.length > 0) {
+            if (campos.length > 1) {
                 resultado = Boolean.FALSE;
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo email no permite espacio");
             }
@@ -107,7 +107,7 @@ public class MbUsuario implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Telefono");
         }else{
             String[] campos = usuario.getTelefono().split(" ");
-            if (campos.length > 0) {
+            if (campos.length > 1) {
                 resultado = Boolean.FALSE;
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo telefono no permite espacio");
             }

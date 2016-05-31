@@ -74,27 +74,37 @@
                                         <div class="col-md-12">
                                             <label class="col-lg-4 control-label">Nombre</label>
                                             <div class="col-lg-8">
-                                                <p:inputText styleClass="form-control" placeholder="Nombre" value="#{MbCrearProyecto.proyecto.nombre}" />
+                                                <p:inputText id ="n" styleClass="form-control" placeholder="Nombre" value="#{MbCrearProyecto.proyecto.nombre}" >
+                                                    <p:ajax event="change"  process="@this" update="n" />
+                                                </p:inputText>
                                             </div>
                                             <label class="col-lg-4 control-label">Descripcion</label>
                                             <div class="col-lg-8">
-                                                <p:inputText styleClass="form-control" placeholder="Descripcion" value="#{MbCrearProyecto.proyecto.descripcion}" />
-                                            </div> 
+                                                <p:inputText id="d" styleClass="form-control" placeholder="Descripcion" value="#{MbCrearProyecto.proyecto.descripcion}" >
+                                                    <p:ajax event="change"  process="@this" update="d" />
+                                                </p:inputText>
+                                            </div>
                                             <div class="col-lg-12">
                                                 <br/>
                                             </div>
                                             <label class="col-lg-12 control-label">Niveles de alerta</label>
                                             <label class="col-lg-4 control-label">Nivel 1</label>
                                             <div class="col-lg-8">
-                                                <p:inputText styleClass="form-control" placeholder="Nivel 1" value="#{MbCrearProyecto.proyecto.alertaNivel1}" />
+                                                <p:inputText id="n1" styleClass="form-control" placeholder="Nivel 1" value="#{MbCrearProyecto.proyecto.alertaNivel1}" >
+                                                    <p:ajax event="change"  process="@this" update="n1" />
+                                                </p:inputText>
                                             </div>
                                             <label class="col-lg-4 control-label">Nivel 2</label>
                                             <div class="col-lg-8">
-                                                <p:inputText styleClass="form-control" placeholder="Nivel 2" value="#{MbCrearProyecto.proyecto.alertaNivel2}" />
+                                                <p:inputText id="n2" styleClass="form-control" placeholder="Nivel 2" value="#{MbCrearProyecto.proyecto.alertaNivel2}"  >
+                                                    <p:ajax event="change"  process="@this" update="n2" />
+                                                </p:inputText>
                                             </div> 
                                             <label class="col-lg-4 control-label">Nivel 3</label>
                                             <div class="col-lg-8">
-                                                <p:inputText styleClass="form-control" placeholder="Nivel 3" value="#{MbCrearProyecto.proyecto.alertaNivel3}" />
+                                                <p:inputText id="n3" styleClass="form-control" placeholder="Nivel 3" value="#{MbCrearProyecto.proyecto.alertaNivel3}" >
+                                                    <p:ajax event="change"  process="@this" update="n3" />
+                                                </p:inputText>
                                             </div> 
                                             <div class="col-lg-12">
                                                 <br/>
@@ -148,11 +158,15 @@
                                         <div class="col-md-12">
                                             <label class="col-lg-2 control-label">Latitud</label>
                                             <div class="col-lg-4">
-                                                <p:inputText styleClass="form-control" placeholder="Latitud" value="#{MbCrearProyecto.latitud}" />
+                                                <p:inputText id="la" styleClass="form-control" placeholder="Latitud" value="#{MbCrearProyecto.latitud}" >
+                                                    <p:ajax event="change"  process="@this" update="la" />
+                                                </p:inputText>
                                             </div>
                                             <label class="col-lg-2 control-label">Longitud</label>
                                             <div class="col-lg-4">
-                                                <p:inputText styleClass="form-control" placeholder="Longitud" value="#{MbCrearProyecto.longitud}" />
+                                                <p:inputText id="lo" styleClass="form-control" placeholder="Longitud" value="#{MbCrearProyecto.longitud}" >
+                                                    <p:ajax event="change"  process="@this" update="lo" />
+                                                </p:inputText>
                                             </div> 
                                             <div class="col-lg-12">
                                                 <br/>

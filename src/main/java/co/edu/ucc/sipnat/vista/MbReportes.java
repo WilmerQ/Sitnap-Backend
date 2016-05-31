@@ -261,6 +261,7 @@ public class MbReportes implements Serializable {
                 sensores.add(pxs.getSensor());
             }
             List<DatosSensor> dses = ls.obtenerDatos(sensores, fechainicio, fechafinal);
+            System.out.println("Tamaño del reporte " + dses.size());
             if (!dses.isEmpty()) {
                 Workbook workbook = new XSSFWorkbook();
                 Sheet auditoriaSheet = workbook.createSheet("datoSensor" + idSensor);
@@ -385,7 +386,7 @@ public class MbReportes implements Serializable {
         if (verificarFormulario()) {
             Sensor s = (Sensor) cb.getById(Sensor.class, idSensor);
             if (s != null) {
-                List<DatosSensor> dses = ls.obtenerDatos(s, fechainicio, fechafinal);
+                List<DatosSensor> dses = ls.obtenerDatos(idSensor, fechainicio, fechafinal);
                 if (!dses.isEmpty()) {
                     Workbook workbook = new XSSFWorkbook();
                     Sheet auditoriaSheet = workbook.createSheet("datoSensor" + idSensor);
@@ -526,6 +527,5 @@ public class MbReportes implements Serializable {
     public void setAlertas(Boolean alertas) {
         this.alertas = alertas;
     }
-    
-    
+
 }

@@ -33,8 +33,8 @@ public class LogicaSensor {
         return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor.id =:s ORDER BY d.fechaCreacion DESC").setParameter("s", id).getResultList();
     }
 
-    public List<DatosSensor> obtenerDatos(Sensor s, Date fi, Date ff) {
-        return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor =:s AND (d.fechaRecoleccion BETWEEN :fi AND :ff ) ORDER BY d.fechaRecoleccion ASC").setParameter("s", s).setParameter("fi", fi).setParameter("ff", ff).getResultList();
+    public List<DatosSensor> obtenerDatos(Long id, Date fi, Date ff) {
+        return em.createQuery("SELECT d FROM DatosSensor d WHERE d.sensor.id =:s AND (d.fechaRecoleccion BETWEEN :fi AND :ff ) ORDER BY d.fechaRecoleccion ASC").setParameter("s", id).setParameter("fi", fi).setParameter("ff", ff).getResultList();
     }
 
     public List<DatosSensor> obtenerDatos(List<Sensor> s, Date fi, Date ff) {

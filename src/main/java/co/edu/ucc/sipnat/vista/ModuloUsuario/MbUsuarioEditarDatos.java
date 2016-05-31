@@ -56,7 +56,10 @@ public class MbUsuarioEditarDatos implements Serializable {
     public void accionActualizarDatos() {
         if (verificarFormulario()) {
             if (cb.guardar(usuario)) {
+                Usuario u = (Usuario) cb.getById(Usuario.class, usuario.getId());
+                SessionOperations.setSessionValue("USUARIO", u);
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se han actualizado los datos");
+                init();
             } else {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "no se ha actualizado los datos");
             }
