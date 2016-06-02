@@ -52,7 +52,7 @@
                             </div>
                             <div class="panel-body">
                                 <h:form role="form" id="form">
-                                    <p:growl id="growl" showDetail="true" />
+                                    
                                     <h:panelGrid columns="2" cellpadding="10">
                                         <p:outputLabel style="width: 100%" value="Nombre de usuario" />
                                         <p:inputText style="width: 100%" value="#{MbLogin.nombreDeUsuaio}" />
@@ -60,7 +60,7 @@
                                         <p:password style="width: 100%"  value="#{MbLogin.password}" />
                                     </h:panelGrid>
                                     <br/>
-                                    <p:commandButton style="float: right" value="Entra"  update=":form" actionListener="#{MbLogin.accionLogin()}" styleClass="ui-priority-primary" />
+                                    <p:commandButton style="float: right" value="Entra"  update="growl-total :form" actionListener="#{MbLogin.accionLogin()}" styleClass="ui-priority-primary" />
                                 </h:form>
                             </div>
 
@@ -76,7 +76,7 @@
                             </div>
                             <div class="panel-body">
                                 <h:form role="form2" id="form2">
-                                    <p:growl id="growl" showDetail="true" />
+                                    
                                     <h:panelGrid columns="2" cellpadding="10">
                                         <p:outputLabel style="width: 100%" value="Nombre de usuario" />
                                         <p:inputText style="width: 100%" value="#{MbUsuario.usuario.nombreUsuario}" />
