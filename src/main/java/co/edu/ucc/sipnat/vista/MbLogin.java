@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.vista;
 
+import co.edu.ucc.sipnat.base.Md5;
 import co.edu.ucc.sipnat.base.SessionOperations;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaLogin;
@@ -52,12 +53,12 @@ public class MbLogin implements Serializable {
             autenticado = Boolean.FALSE;
             isusuario = Boolean.FALSE;
             SessionOperations.setSessionValue("USER", Boolean.FALSE);
-        }else{
-           autenticado = Boolean.TRUE;
-           isusuario = Boolean.TRUE;
-        }    
+        } else {
+            autenticado = Boolean.TRUE;
+            isusuario = Boolean.TRUE;
+        }
     }
-
+    
     public String accionLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
@@ -71,7 +72,7 @@ public class MbLogin implements Serializable {
             isusuario = true;
             SessionOperations.setSessionValue("USER", Boolean.TRUE);
             SessionOperations.setSessionValue("USUARIO", usuario);
-            
+
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, u.getNombreUsuario(), "Bienvenido"));
             redirect("usuario/index.xhtml");
         } else {

@@ -8,13 +8,17 @@ package co.edu.ucc.sipnat.vista;
 import co.edu.ucc.sipnat.base.Md5;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -121,9 +125,20 @@ public class MbUsuario implements Serializable {
             if (cb.guardar(usuario)) {
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se ha guardado");
                 init();
+                String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
+                redirect(contextPath + "/index.xhtml");
             } else {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "No se ha guardado");
             }
+        }
+    }
+    
+     private void redirect(String url) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            context.getExternalContext().redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(MbLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -155,5 +170,5 @@ public class MbUsuario implements Serializable {
     public void setClave2(String clave2) {
         this.clave2 = clave2;
     }
-
+    
 }

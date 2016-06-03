@@ -49,20 +49,25 @@
                         <div class="login-panel panel panel-default ">
 
                             <div class="panel-heading">
-                                <h3 class="panel-title">Autenticacion de Usuario</h3>
+                                <h3 class="panel-title">Registro de Usuario</h3>
                             </div>
                             <div class="panel-body">
                                 <h:form role="form" id="form">
-                                    <p:growl id="growl" showDetail="true" />
-                                    <h:panelGrid columns="2" cellpadding="10">
+                                      <h:panelGrid columns="2" cellpadding="10">
                                         <p:outputLabel style="width: 100%" value="Nombre de usuario" />
-                                        <p:inputText style="width: 100%" value="#{MbLogin.nombreDeUsuaio}" />
+                                        <p:inputText style="width: 100%" value="#{MbUsuario.usuario.nombreUsuario}" />
+                                        <p:outputLabel style="width: 100%" value="Telefono" />
+                                        <p:inputText style="width: 100%" value="#{MbUsuario.usuario.telefono}" />
+                                        <p:outputLabel style="width: 100%" value="Email" />
+                                        <p:inputText style="width: 100%" value="#{MbUsuario.usuario.email}" />
                                         <p:outputLabel style="width: 100%" value="Clave" />
-                                        <p:password style="width: 100%"  value="#{MbLogin.password}" />
-                                    </h:panelGrid>
+                                        <p:password style="width: 100%" value="#{MbUsuario.clave1}" />
+                                        <p:outputLabel style="width: 100%" value="Clave de confirmacion" />
+                                        <p:password style="width: 100%" value="#{MbUsuario.clave2}" />
+                                    </h:panelGrid>                   
                                     <br/>
-                                    <h:commandLink style="float: left" value="Registrase" action="/registro.xhtml"/>
-                                    <p:commandButton style="float: right" value="Entra"  update=":form growl-total" actionListener="#{MbLogin.accionLogin()}" styleClass="ui-priority-primary" />                               
+                                    <h:commandLink style="float: left" value="Autenticacion" action="/index.xhtml"/>
+                                    <p:commandButton style="float: right" value="Registrar"  update=":form growl-total" actionListener="#{MbUsuario.accionGuarda()}" styleClass="ui-priority-primary" />  
                                 </h:form>
                             </div>
                         </div>
@@ -70,19 +75,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- jQuery -->
-        <script src="/sipnat/bower_components/jquery/dist/jquery.min.js"></script>
-
-        <!-- Bootstrap Core JavaScript -->
-        <script src="/sipnat/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
-        <!-- Metis Menu Plugin JavaScript -->
-        <script src="/sipnat/bower_components/metisMenu/dist/metisMenu.min.js"></script>
-
-        <!-- Custom Theme JavaScript -->
-        <script src="/sipnat/dist/js/sb-admin-2.js"></script>
-
     </h:body>
 
 </html>
