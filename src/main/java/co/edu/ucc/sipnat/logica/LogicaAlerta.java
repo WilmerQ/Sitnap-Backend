@@ -10,6 +10,7 @@ import co.edu.ucc.sipnat.modelo.Alerta;
 import co.edu.ucc.sipnat.modelo.DatosSensor;
 import co.edu.ucc.sipnat.modelo.Dispositivo;
 import co.edu.ucc.sipnat.modelo.PromedioDatoSensor;
+import co.edu.ucc.sipnat.modelo.Proyecto;
 import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.Sensor;
 import com.google.android.gcm.server.Message;
@@ -129,43 +130,50 @@ public class LogicaAlerta {
             cb.guardar(datoSensor);
             try {
                 List<ProyectoXSensor> pxses = cb.getByOneField(ProyectoXSensor.class, "sensor", s);
-                for (ProyectoXSensor pxse : pxses) {
+                List<Proyecto> list = new ArrayList<>();
+                Alerta a = new Alerta();
+                String des = "Los siguiente proyecto dispararon alertas \n";
+                for (ProyectoXSensor pxs : pxses) {
                     Alerta alerta = new Alerta();
-                    alerta.setProyecto(pxse.getProyecto());
+                    alerta.setProyecto(pxs.getProyecto());
                     alerta.setFechaDelDisparo(new Date());
                     alerta.setHoraDelDisparo(new Date());
                     alerta.setNivel("Alerta de nivel " + nivel);
                     alerta.setDato(dato.getDato());
-
+                    list.add(pxs.getProyecto());
                     if (nivel == 1) {
-                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel1());
+                        des = des + pxs.getProyecto().getNombre() + " " + pxs.getProyecto().getAlertaNivel1() + "\n";
                         alerta.setCodigoColor("#fff176");
                     } else if (nivel == 2) {
-                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel2());
+                        des = des + pxs.getProyecto().getNombre() + " " + pxs.getProyecto().getAlertaNivel2() + "\n";
                         alerta.setCodigoColor("#ffa726");
                     } else if (nivel == 3) {
-                        alerta.setDescripcion(pxse.getProyecto().getAlertaNivel3());
+                        des = des + pxs.getProyecto().getNombre() + " " + pxs.getProyecto().getAlertaNivel3() + "\n";
                         alerta.setCodigoColor("#ef5350");
                     }
-
+                    alerta.setDescripcion(des);
                     if (cb.guardar(alerta)) {
-                        Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
-                        String mensaje = g.toJson(alerta);
-                        System.out.println("Json " + mensaje);
-                        List<Dispositivo> ds = cb.getByOneField(Dispositivo.class, "proyecto", pxse.getProyecto());
-                        if (!ds.isEmpty()) {
-                            ArrayList<String> devicesList = new ArrayList<>();
-                            for (Dispositivo d : ds) {
-                                devicesList.add(d.getToken());
-                            }
-                            Sender sender = new Sender(GCM_API_KEY);
-                            Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData(MESSAGE_KEY, mensaje).build();
-                            MulticastResult result = sender.send(message, devicesList, 1);
-                            sender.send(message, devicesList, 1);
-                            System.out.println("Resultado: " + result.toString());
-                        }
+                        a = alerta;
                     }
                 }
+
+                Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
+                String mensaje = g.toJson(a);
+                System.out.println("Json " + mensaje);
+                List<String> ds1 = getDispositivos(list);
+                if (!ds1.isEmpty()) {
+                    ArrayList<String> devicesList = new ArrayList<>();
+                    for (String s1 : ds1) {
+                        System.out.println(s1);
+                        devicesList.add(s1);
+                    }
+                    Sender sender = new Sender(GCM_API_KEY);
+                    Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData(MESSAGE_KEY, mensaje).build();
+                    MulticastResult result = sender.send(message, devicesList, 1);
+                    sender.send(message, devicesList, 1);
+                    System.out.println("Resultado: " + result.toString());
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -187,6 +195,10 @@ public class LogicaAlerta {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private List<String> getDispositivos(List<Proyecto> proyecto) {
+        return em.createQuery("SELECT DISTINCT d.token FROM Dispositivo d WHERE d.proyecto IN (:p)").setParameter("p", proyecto).getResultList();
     }
 
     private List<DatosSensor> obtenerDatosDeSensores(Sensor s) {

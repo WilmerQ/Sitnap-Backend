@@ -82,7 +82,7 @@ public class MbSensor implements Serializable {
         draggableModel = new DefaultMapModel();
         LatLng coord1 = new LatLng(new Double(latitud), new Double(longitud));
         //Draggable
-        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
+        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
         for (Marker premarker : draggableModel.getMarkers()) {
             premarker.setDraggable(true);
         }
@@ -96,7 +96,7 @@ public class MbSensor implements Serializable {
             if (s != null) {
                 if (s.getUsuarioCreacion().equals(usuario.getNombreUsuario())) {
                     cargaSensor(s);
-                }else{
+                } else {
                     mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Error no se puede editar este sensor, tiene que ser el usuario que lo creo");
                 }
             } else {
@@ -109,7 +109,7 @@ public class MbSensor implements Serializable {
         if (sensor.getId() != null) {
             draggableModel = new DefaultMapModel();
             LatLng coord1 = new LatLng(new Double(latitud), new Double(longitud));
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + idTipoSensor));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
             for (Marker premarker : draggableModel.getMarkers()) {
                 premarker.setDraggable(true);
             }
@@ -124,15 +124,38 @@ public class MbSensor implements Serializable {
         longitud = marker.getLatlng().getLng() + "";
     }
 
-    public void accionActualizar() {
-        sensor.setLatitud(latitud);
-        sensor.setLongitud(longitud);
-        sensor.setTipoSensor((TipoSensor) cb.getById(TipoSensor.class, idTipoSensor));
-        if (cb.guardar(sensor)) {
-            mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se ha actualizado en sensor");
-            init();
+    public Boolean verificarFormulario() {
+        Boolean resultado = Boolean.TRUE;
+        if (latitud.trim().length() == 0 || longitud.trim().length() == 0) {
+            resultado = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Ubique el sensor");
         } else {
-            mostrarMensaje(FacesMessage.SEVERITY_INFO, "ERROR", "No se ha actualizado en sensor");
+            try {
+                Double l = new Double(latitud);
+                Double lo = new Double(longitud);
+            } catch (Exception e) {
+                resultado = Boolean.FALSE;
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Latitud o longitud deben ser datos numericos");
+            }
+        }
+        if (sensor.getDescripcion().trim().length() == 0) {
+            resultado = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue descripcion");
+        }
+        return resultado;
+    }
+
+    public void accionActualizar() {
+        if (verificarFormulario()) {
+            sensor.setLatitud(latitud);
+            sensor.setLongitud(longitud);
+            sensor.setTipoSensor((TipoSensor) cb.getById(TipoSensor.class, idTipoSensor));
+            if (cb.guardar(sensor)) {
+                mostrarMensaje(FacesMessage.SEVERITY_INFO, "Exitoso", "Se ha actualizado en sensor");
+                init();
+            } else {
+                mostrarMensaje(FacesMessage.SEVERITY_INFO, "ERROR", "No se ha actualizado en sensor");
+            }
         }
     }
 
@@ -219,7 +242,7 @@ public class MbSensor implements Serializable {
 
     public void setIdSensor(Long idSensor) {
         this.idSensor = idSensor;
-    }    
+    }
 
     public Boolean getSensorCargado() {
         return sensorCargado;
@@ -227,5 +250,5 @@ public class MbSensor implements Serializable {
 
     public void setSensorCargado(Boolean sensorCargado) {
         this.sensorCargado = sensorCargado;
-    }    
+    }
 }

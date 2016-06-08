@@ -39,6 +39,7 @@ import org.primefaces.model.map.Marker;
 @ManagedBean(name = "MbCrearProyecto")
 public class MbCrearProyecto implements Serializable {
 
+    private String centro;
     private Proyecto proyecto;
     private Sensor sensor;
     private List<Sensor> sensores;
@@ -62,6 +63,7 @@ public class MbCrearProyecto implements Serializable {
 
     @PostConstruct
     public void init() {
+        centro = "11.247141, -74.205504";
         proyecto = new Proyecto();
         sensor = new Sensor();
         sensores = new ArrayList<>();
@@ -76,6 +78,8 @@ public class MbCrearProyecto implements Serializable {
             for (ProyectoXSensor pxs : pxses) {
                 sensores.add(pxs.getSensor());
             }
+            mostrarSensoresAsignado();
+
             SessionOperations.setSessionValue("PROYECTO", null);
         }
     }
@@ -87,7 +91,12 @@ public class MbCrearProyecto implements Serializable {
                 idTipoSensor = ts.getId();
                 cargaSensores();
                 draggableModel = new DefaultMapModel();
-                LatLng coord1 = new LatLng(11.247141, -74.205504);
+                if (!sensores.isEmpty()) {
+                    mostrarSensoresAsignado();
+                }
+                String[] parts = centro.split(",");
+                LatLng coord1 = new LatLng(new Double(parts[0]), new Double(parts[1]));
+
                 //Draggable
                 draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
                 for (Marker premarker : draggableModel.getMarkers()) {
@@ -109,6 +118,7 @@ public class MbCrearProyecto implements Serializable {
         marker = event.getMarker();
         latitud = marker.getLatlng().getLat() + "";
         longitud = marker.getLatlng().getLng() + "";
+        centro = marker.getLatlng().getLat() + "," + marker.getLatlng().getLng();
     }
 
     public Boolean verificarFormularioDelSensor() {
@@ -129,6 +139,10 @@ public class MbCrearProyecto implements Serializable {
                 mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Latitud o longitud deben ser datos numericos");
             }
         }
+        if (sensor.getDescripcion().trim().length() == 0) {
+            res = Boolean.FALSE;
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue Descripcion del sensor");
+        }
         return res;
     }
 
@@ -138,15 +152,29 @@ public class MbCrearProyecto implements Serializable {
             sensor.setLongitud(longitud);
             sensor.setTipoSensor((TipoSensor) cb.getById(TipoSensor.class, idTipoSensor));
             sensores.add(sensor);
-            draggableModel = new DefaultMapModel();
-            LatLng coord1 = new LatLng(11.247141, -74.205504);
+            centroZona();
+            mostrarSensoresAsignado();
+
+            String[] parts = centro.split(",");
+            LatLng coord1 = null;
+            if (sensores.size() == 1) {
+                System.out.println("2da Cordenada");
+                coord1 = new LatLng(new Double(parts[0]) + 0.010000, new Double(parts[1]) + 0.010000);
+                System.out.println("lat " + coord1.getLat());
+                System.out.println("lon " + coord1.getLng());
+            } else {
+                coord1 = new LatLng(new Double(parts[0]), new Double(parts[1]));
+            }
             longitud = "";
             latitud = "";
             //Draggable
+
             draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
-            for (Marker premarker : draggableModel.getMarkers()) {
-                premarker.setDraggable(true);
-            }
+
+            int mak = draggableModel.getMarkers().size() - 1;
+            Marker perMarker = draggableModel.getMarkers().get(mak);
+            perMarker.setDraggable(true);
+
             sensor = new Sensor();
         }
     }
@@ -168,6 +196,7 @@ public class MbCrearProyecto implements Serializable {
             if (verificacion) {
                 sensores.add(row);
                 sensoresYaCreado.remove(row);
+                mostrarSensoresAsignado();
             }
         }
     }
@@ -190,6 +219,7 @@ public class MbCrearProyecto implements Serializable {
                 }
             }
         }
+        mostrarSensoresAsignado();
     }
 
     public void accionVerSensor(Sensor row) {
@@ -198,6 +228,7 @@ public class MbCrearProyecto implements Serializable {
         }
         idTipoSensor = null;
         draggableModel = new DefaultMapModel();
+        centro = row.getLatitud() + "," + row.getLongitud();
         LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
         //Draggable
         draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
@@ -209,6 +240,22 @@ public class MbCrearProyecto implements Serializable {
         }
         idTipoSensor = null;
         draggableModel = new DefaultMapModel();
+        centroZona();
+        for (Sensor row : sensores) {
+
+            LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
+            //Draggable
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
+        }
+
+    }
+
+    public void mostrarSensoresAsignado() {
+        for (TipoSensor ts : tipoSensores) {
+            ts.setSelecionado(Boolean.FALSE);
+        }
+        draggableModel = new DefaultMapModel();
+        centroZona();
         for (Sensor row : sensores) {
             LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
             //Draggable
@@ -280,6 +327,49 @@ public class MbCrearProyecto implements Serializable {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "Agregue nivel de alerta 3");
         }
         return resultado;
+    }
+
+    public LatLng centroZona() {
+        List<LatLng> latLngs = new ArrayList<>();
+
+        for (Sensor dz : sensores) {
+            latLngs.add(new LatLng(Double.parseDouble(dz.getLatitud()), Double.parseDouble(dz.getLongitud())));
+        }
+        //Polygon p = advancedModel.getPolygons().get(0);
+
+        //latitud menor
+        LatLng latmenor = latLngs.get(0);
+        LatLng latMayor = latLngs.get(0);
+        for (int i = 0; i < latLngs.size(); i++) {
+            if (latLngs.get(i).getLat() < latmenor.getLat()) {
+                latmenor = latLngs.get(i);
+            }
+            if (latLngs.get(i).getLat() > latMayor.getLat()) {
+                latMayor = latLngs.get(i);
+            }
+        }
+
+        //longitud menor
+        LatLng lonmenor = latLngs.get(0);
+        LatLng lonMayor = latLngs.get(0);
+        for (int i = 0; i < latLngs.size(); i++) {
+            if (latLngs.get(i).getLng() < lonmenor.getLng()) {
+                lonmenor = latLngs.get(i);
+            }
+            if (latLngs.get(i).getLng() > lonMayor.getLng()) {
+                lonMayor = latLngs.get(i);
+            }
+        }
+
+        double dLat = latMayor.getLat() - latmenor.getLat();
+        double dLng = lonMayor.getLng() - lonmenor.getLng();
+        double sindLat = dLat / 2;
+        double sindLng = dLng / 2;
+
+        LatLng coord1 = new LatLng(sindLat + latmenor.getLat(), sindLng + lonmenor.getLng());
+        //advancedModel.addOverlay(new Marker(coord1, zonaAfectada.getNombreDelaZona()));
+        centro = coord1.getLat() + "," + coord1.getLng();
+        return coord1;
     }
 
     public void mostrarMensaje(FacesMessage.Severity icono, String titulo, String mensaje) {
@@ -366,4 +456,13 @@ public class MbCrearProyecto implements Serializable {
     public void setSensoresYaCreado(List<Sensor> sensoresYaCreado) {
         this.sensoresYaCreado = sensoresYaCreado;
     }
+
+    public String getCentro() {
+        return centro;
+    }
+
+    public void setCentro(String centro) {
+        this.centro = centro;
+    }
+
 }

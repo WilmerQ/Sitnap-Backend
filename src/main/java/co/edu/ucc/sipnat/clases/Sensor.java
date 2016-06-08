@@ -15,6 +15,7 @@ public class Sensor {
     private String latitud;
     private String longitud;
     private String nombreTipoSensor;
+    private String descripcion;
     private String estado;
     private Long idTipoSensor;
 
@@ -25,6 +26,7 @@ public class Sensor {
         this.estado = s.getEstadoDelSensor();
         this.idTipoSensor = s.getTipoSensor().getId();
         this.nombreTipoSensor = s.getTipoSensor().getNombre();
+        this.descripcion = s.getDescripcion();
     }
 
     public Long getId() {
@@ -73,5 +75,13 @@ public class Sensor {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

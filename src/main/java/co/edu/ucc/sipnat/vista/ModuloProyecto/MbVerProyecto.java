@@ -48,7 +48,8 @@ import org.primefaces.model.map.Polygon;
 @ViewScoped
 @ManagedBean(name = "MbVerProyecto")
 public class MbVerProyecto implements Serializable {
-
+    
+    private String centro = "11.247141, -74.205504";
     private List<Proyecto> proyectos;
     private List<ProyectoXSensor> sensores;
     private List<Sensor> listSensores;
@@ -106,6 +107,7 @@ public class MbVerProyecto implements Serializable {
         sensores = cb.getByOneField(ProyectoXSensor.class, "proyecto", row);
         draggableModel = new DefaultMapModel();
         listSensores = new ArrayList<>();
+        centroZona();
         for (ProyectoXSensor pxs : sensores) {
             listSensores.add(pxs.getSensor());
             LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
@@ -216,6 +218,49 @@ public class MbVerProyecto implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(null, new FacesMessage(icono, titulo, mensaje));
     }
+    
+    public LatLng centroZona() {
+        List<LatLng> latLngs = new ArrayList<>();
+
+        for (ProyectoXSensor dz : sensores) {
+            latLngs.add(new LatLng(Double.parseDouble(dz.getSensor().getLatitud()), Double.parseDouble(dz.getSensor().getLongitud())));
+        }
+        //Polygon p = advancedModel.getPolygons().get(0);
+
+        //latitud menor
+        LatLng latmenor = latLngs.get(0);
+        LatLng latMayor = latLngs.get(0);
+        for (int i = 0; i < latLngs.size(); i++) {
+            if (latLngs.get(i).getLat() < latmenor.getLat()) {
+                latmenor = latLngs.get(i);
+            }
+            if (latLngs.get(i).getLat() > latMayor.getLat()) {
+                latMayor = latLngs.get(i);
+            }
+        }
+
+        //longitud menor
+        LatLng lonmenor = latLngs.get(0);
+        LatLng lonMayor = latLngs.get(0);
+        for (int i = 0; i < latLngs.size(); i++) {
+            if (latLngs.get(i).getLng() < lonmenor.getLng()) {
+                lonmenor = latLngs.get(i);
+            }
+            if (latLngs.get(i).getLng() > lonMayor.getLng()) {
+                lonMayor = latLngs.get(i);
+            }
+        }
+
+        double dLat = latMayor.getLat() - latmenor.getLat();
+        double dLng = lonMayor.getLng() - lonmenor.getLng();
+        double sindLat = dLat / 2;
+        double sindLng = dLng / 2;
+
+        LatLng coord1 = new LatLng(sindLat + latmenor.getLat(), sindLng + lonmenor.getLng());
+        //advancedModel.addOverlay(new Marker(coord1, zonaAfectada.getNombreDelaZona()));
+        centro = coord1.getLat() + "," + coord1.getLng();
+        return coord1;
+    }
 
     private void redirect(String url) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -306,4 +351,11 @@ public class MbVerProyecto implements Serializable {
         this.idProyecto = idProyecto;
     }
 
+    public String getCentro() {
+        return centro;
+    }
+
+    public void setCentro(String centro) {
+        this.centro = centro;
+    }
 }

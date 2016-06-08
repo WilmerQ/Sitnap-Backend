@@ -15,6 +15,7 @@ import co.edu.ucc.sipnat.modelo.ProyectoXSensor;
 import co.edu.ucc.sipnat.modelo.ZonaXProyecto;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class MbIndex implements Serializable {
     private Marker marker;
     private LineChartModel dataModelSensor;
     private Boolean mostarPopupDeGrafica;
+    private String centro;
 
     @EJB
     private CommonsBean cb;
@@ -65,6 +67,7 @@ public class MbIndex implements Serializable {
 
     @PostConstruct
     public void init() {
+        centro = "11.247141, -74.205504";
         mostarPopupDeGrafica = Boolean.FALSE;
         proyectoItems = new LinkedList<>();
         List<Proyecto> proyectos = cb.getAll(Proyecto.class, "ORDER BY o.id");
@@ -82,7 +85,8 @@ public class MbIndex implements Serializable {
             Proyecto p = (Proyecto) cb.getById(Proyecto.class, idProyecto);
             sensores = cb.getByOneField(ProyectoXSensor.class, "proyecto", p);
             draggableModel = new DefaultMapModel();
-            for (ProyectoXSensor pxs : sensores) {
+            centroZona();
+            for (ProyectoXSensor pxs : sensores) {                
                 LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
                 draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
             }
@@ -138,6 +142,49 @@ public class MbIndex implements Serializable {
 
     public void ocultarPopup() {
         mostarPopupDeGrafica = Boolean.FALSE;
+    }
+    
+    public LatLng centroZona() {
+        List<LatLng> latLngs = new ArrayList<>();
+
+        for (ProyectoXSensor dz : sensores) {
+            latLngs.add(new LatLng(Double.parseDouble(dz.getSensor().getLatitud()), Double.parseDouble(dz.getSensor().getLongitud())));
+        }
+        //Polygon p = advancedModel.getPolygons().get(0);
+
+        //latitud menor
+        LatLng latmenor = latLngs.get(0);
+        LatLng latMayor = latLngs.get(0);
+        for (int i = 0; i < latLngs.size(); i++) {
+            if (latLngs.get(i).getLat() < latmenor.getLat()) {
+                latmenor = latLngs.get(i);
+            }
+            if (latLngs.get(i).getLat() > latMayor.getLat()) {
+                latMayor = latLngs.get(i);
+            }
+        }
+
+        //longitud menor
+        LatLng lonmenor = latLngs.get(0);
+        LatLng lonMayor = latLngs.get(0);
+        for (int i = 0; i < latLngs.size(); i++) {
+            if (latLngs.get(i).getLng() < lonmenor.getLng()) {
+                lonmenor = latLngs.get(i);
+            }
+            if (latLngs.get(i).getLng() > lonMayor.getLng()) {
+                lonMayor = latLngs.get(i);
+            }
+        }
+
+        double dLat = latMayor.getLat() - latmenor.getLat();
+        double dLng = lonMayor.getLng() - lonmenor.getLng();
+        double sindLat = dLat / 2;
+        double sindLng = dLng / 2;
+
+        LatLng coord1 = new LatLng(sindLat + latmenor.getLat(), sindLng + lonmenor.getLng());
+        //advancedModel.addOverlay(new Marker(coord1, zonaAfectada.getNombreDelaZona()));
+        centro = coord1.getLat() + "," + coord1.getLng();
+        return coord1;
     }
 
     public void mostrarMensaje(FacesMessage.Severity icono, String titulo, String mensaje) {
@@ -199,5 +246,13 @@ public class MbIndex implements Serializable {
 
     public void setMostarPopupDeGrafica(Boolean mostarPopupDeGrafica) {
         this.mostarPopupDeGrafica = mostarPopupDeGrafica;
+    }
+
+    public String getCentro() {
+        return centro;
+    }
+
+    public void setCentro(String centro) {
+        this.centro = centro;
     }
 }

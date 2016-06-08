@@ -8,6 +8,7 @@ package co.edu.ucc.sipnat.modelo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -22,6 +23,8 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     private String latitud;
     private String longitud;
     private String estadoDelSensor;
+    @Column(columnDefinition = "TEXT")
+    private String descripcion;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaDeDesconexion;
     @ManyToOne
@@ -95,4 +98,12 @@ public class Sensor extends CamposComunesdeEntidad implements Serializable {
     public void setPromedio(BigDecimal promedio) {
         this.promedio = promedio;
     }  
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 }

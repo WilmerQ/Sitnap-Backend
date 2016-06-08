@@ -8,9 +8,12 @@ package co.edu.ucc.sipnat.webservice;
 import co.edu.ucc.sipnat.base.GsonExcludeListStrategy;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.modelo.Proyecto;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -62,7 +65,6 @@ public class ProyectoResource {
         return g.toJson(list);
     }
 
-    
     @GET
     @Produces("application/json")
     @Path("/{id}")
@@ -86,6 +88,23 @@ public class ProyectoResource {
             for (Proyecto proyecto : proyectos) {
                 listp.add(new co.edu.ucc.sipnat.clases.Proyecto(proyecto));
             }
+        }
+        Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
+        return g.toJson(listp);
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/{dos}")
+    public String getProyectos(@PathParam("id") String id, @PathParam("dos") String dos) {
+        Type listType = new TypeToken<LinkedList<Long>>() {
+        }.getType();
+        List<Long> ids = new Gson().fromJson(id, listType);
+        List<Proyecto> p = cb.getIn(Proyecto.class, "id", ids);
+        List<co.edu.ucc.sipnat.clases.Proyecto> listp = new ArrayList<>();
+        for (Proyecto pr : p) {
+            listp.add(new co.edu.ucc.sipnat.clases.Proyecto(pr));
+
         }
         Gson g = new GsonBuilder().setExclusionStrategies(new GsonExcludeListStrategy()).setPrettyPrinting().create();
         return g.toJson(listp);

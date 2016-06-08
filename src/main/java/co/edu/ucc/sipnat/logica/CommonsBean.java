@@ -154,4 +154,9 @@ public class CommonsBean {
         String nombreClase = o.getSimpleName();
         return em.createQuery("Select o from " + nombreClase + " o where o." + campo + " not in (:notin)").setParameter("notin", notIn).getResultList();
     }
+    
+    public List getIn(Class o, String campo, List notIn) {
+        String nombreClase = o.getSimpleName();
+        return em.createQuery("Select o from " + nombreClase + " o where o." + campo + "  in (:notin)").setParameter("notin", notIn).getResultList();
+    }
 }

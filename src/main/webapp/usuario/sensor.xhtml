@@ -57,6 +57,12 @@
                                             <div class="col-lg-3">
                                                 <p:inputText styleClass="form-control" placeholder="Longitud" value="#{MbSensor.longitud}" />
                                             </div> 
+                                            <label class="col-lg-4 control-label">Descripcion</label>
+                                            <div class="col-lg-8">
+                                                <p:inputTextarea id="des" styleClass="form-control" placeholder="Descripcion" value="#{MbSensor.sensor.descripcion}"  rows="3" cols="30"  maxlength="40"  autoResize="false" >
+                                                    <p:ajax event="change"  process="@this" update="des" />
+                                                </p:inputTextarea>
+                                            </div> 
                                             <div class="col-lg-12">
                                                 <br/>
                                             </div>
@@ -100,6 +106,9 @@
                                                 </p:column>
                                                 <p:column headerText="Logitud" style="width: 22%">
                                                     <h:outputText value="#{row.longitud}" />
+                                                </p:column>
+                                                <p:column headerText="Descripcion" style="width: 22%">
+                                                    <h:outputText value="#{row.descripcion}" />
                                                 </p:column>
                                                 <p:column headerText="Estado" style="width: 22%">
                                                     <h:outputText value="#{row.estadoDelSensor}" />

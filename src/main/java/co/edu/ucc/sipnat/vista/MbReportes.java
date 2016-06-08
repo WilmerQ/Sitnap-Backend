@@ -309,6 +309,7 @@ public class MbReportes implements Serializable {
             rowinit.createCell(cellinit++).setCellValue("Codigo Sensor");
             rowinit.createCell(cellinit++).setCellValue("Tipo de sensor");
             rowinit.createCell(cellinit++).setCellValue("Estado");
+            rowinit.createCell(cellinit++).setCellValue("Descripcion");
             rowinit.createCell(cellinit++).setCellValue("Latitud");
             rowinit.createCell(cellinit++).setCellValue("Longitud");
             rowinit.createCell(cellinit++).setCellValue("Codigo de proyecto padre");
@@ -321,6 +322,7 @@ public class MbReportes implements Serializable {
                 row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getId());
                 row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getTipoSensor().getNombre());
                 row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getEstadoDelSensor());
+                row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getDescripcion());
                 row2.createCell(cellIndex++).setCellValue(Double.parseDouble(pxs.getSensor().getLatitud()));
                 row2.createCell(cellIndex++).setCellValue(Double.parseDouble(pxs.getSensor().getLongitud()));
                 row2.createCell(cellIndex++).setCellValue(pxs.getSensor().getProyectoPadre().getId());
