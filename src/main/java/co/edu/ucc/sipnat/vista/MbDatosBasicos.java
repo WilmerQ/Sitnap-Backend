@@ -10,6 +10,8 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -29,7 +31,9 @@ public class MbDatosBasicos implements Serializable {
 
     @PostConstruct
     public void init() {
+        
         ip = DatosBasicos.ip;
+        
         //ip = "localhost";
     }
 
