@@ -51,7 +51,7 @@
                                             <div class="col-lg-12">
                                                 <p:fileUpload id="img" rendered="#{MbTipoDeSensor.tipoSensor.logoDelTipo == null}" fileUploadListener="#{MbTipoDeSensor.handleFileUpload}"
                                                               dragDropSupport="false"  
-                                                              mode="advanced"
+                                                              mode="simple"
                                                               multiple="false" 
                                                               auto="true"
                                                               label="Seleccione Fotos"
@@ -96,8 +96,8 @@
                                                 <p:column headerText="Icono" >
                                                     <p:graphicImage  url="http://#{MbDatosBasicos.ip}:8080/sipnat/imagenServlet?id=#{row.id}" style="width: 32px; height:32px" /> 
                                                 </p:column>
-                                                <p:column style="width: 50px" >
-                                                    <p:commandLink  action="#{MbTipoDeSensor.cargaTipoDeSensor(row)}" update=":form">
+                                                <p:column style="width: 30px" >
+                                                    <p:commandLink  action="#{MbTipoDeSensor.cargaTipoDeSensor(row)}" update=":form" >
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                     </p:commandLink>
                                                 </p:column>

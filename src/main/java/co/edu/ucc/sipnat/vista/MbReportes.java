@@ -5,6 +5,7 @@
  */
 package co.edu.ucc.sipnat.vista;
 
+import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaAlerta;
 import co.edu.ucc.sipnat.logica.LogicaAuditoria;
@@ -244,8 +245,7 @@ public class MbReportes implements Serializable {
                 FileOutputStream archivo = new FileOutputStream(pathFile);
                 workbook.write(archivo);
                 archivo.close();
-                String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
-                redirect(contextPath + "/usuario/archivo/" + nameFile);
+                redirect(DatosBasicos.path + "/usuario/archivo/" + nameFile);
             } else {
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
             }
@@ -290,8 +290,7 @@ public class MbReportes implements Serializable {
                 FileOutputStream archivo = new FileOutputStream(pathFile);
                 workbook.write(archivo);
                 archivo.close();
-                String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
-                redirect(contextPath + "/usuario/archivo/" + nameFile);
+                redirect(DatosBasicos.path + "/usuario/archivo/" + nameFile);
             } else {
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
             }
@@ -338,8 +337,8 @@ public class MbReportes implements Serializable {
             FileOutputStream archivo = new FileOutputStream(pathFile);
             workbook.write(archivo);
             archivo.close();
-            String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
-            redirect(contextPath + "/usuario/archivo/" + nameFile);
+            
+            redirect(DatosBasicos.path + "/usuario/archivo/" + nameFile);
         }
     }
 
@@ -376,8 +375,7 @@ public class MbReportes implements Serializable {
                 FileOutputStream archivo = new FileOutputStream(pathFile);
                 workbook.write(archivo);
                 archivo.close();
-                String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
-                redirect(contextPath + "/usuario/archivo/" + nameFile);
+                redirect(DatosBasicos.path + "/usuario/archivo/" + nameFile);
             } else {
                 mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
             }
@@ -417,8 +415,7 @@ public class MbReportes implements Serializable {
                     FileOutputStream archivo = new FileOutputStream(pathFile);
                     workbook.write(archivo);
                     archivo.close();
-                    String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
-                    redirect(contextPath + "/usuario/archivo/" + nameFile);
+                    redirect(DatosBasicos.path + "/usuario/archivo/" + nameFile);
                 } else {
                     mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "No hay datos");
                 }

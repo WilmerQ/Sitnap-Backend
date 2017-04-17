@@ -98,7 +98,7 @@ public class MbCrearProyecto implements Serializable {
                 LatLng coord1 = new LatLng(new Double(parts[0]), new Double(parts[1]));
 
                 //Draggable
-                draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
+                draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + idTipoSensor));
                 for (Marker premarker : draggableModel.getMarkers()) {
                     premarker.setDraggable(true);
                 }
@@ -169,7 +169,7 @@ public class MbCrearProyecto implements Serializable {
             latitud = "";
             //Draggable
 
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + idTipoSensor));
 
             int mak = draggableModel.getMarkers().size() - 1;
             Marker perMarker = draggableModel.getMarkers().get(mak);
@@ -204,19 +204,17 @@ public class MbCrearProyecto implements Serializable {
     public void accionRemoverSensor(Sensor row) {
         if (row.getId() == null) {
             sensores.remove(row);
+        } else if (proyecto.getId() == null) {
+            sensores.remove(row);
+            sensoresYaCreado.add(row);
         } else {
-            if (proyecto.getId() == null) {
+            ProyectoXSensor pxs = lp.buscarRelacion(proyecto, row);
+            if (cb.remove(pxs)) {
+                mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "Sensor retirado");
                 sensores.remove(row);
                 sensoresYaCreado.add(row);
             } else {
-                ProyectoXSensor pxs = lp.buscarRelacion(proyecto, row);
-                if (cb.remove(pxs)) {
-                    mostrarMensaje(FacesMessage.SEVERITY_INFO, "Alvertencia", "Sensor retirado");
-                    sensores.remove(row);
-                    sensoresYaCreado.add(row);
-                } else {
-                    mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "No se pudo guarda");
-                }
+                mostrarMensaje(FacesMessage.SEVERITY_ERROR, "ERROR", "No se pudo guarda");
             }
         }
         mostrarSensoresAsignado();
@@ -231,7 +229,7 @@ public class MbCrearProyecto implements Serializable {
         centro = row.getLatitud() + "," + row.getLongitud();
         LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
         //Draggable
-        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
+        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + row.getTipoSensor().getId()));
     }
 
     public void accionVerTodoLosSensores() {
@@ -259,8 +257,7 @@ public class MbCrearProyecto implements Serializable {
         for (Sensor row : sensores) {
             LatLng coord1 = new LatLng(new Double(row.getLatitud()), new Double(row.getLongitud()));
             //Draggable
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
-
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + row.getTipoSensor().getId()));
         }
     }
 

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DatosBasicos {
     public static String ip = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getServerName();    
+    public static String path = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();    
+    public static Integer port = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getLocalPort();    
     //public static String ip = "localhost";  
     //public static String ip = "54.165.89.80";  
 }

@@ -48,7 +48,7 @@ import org.primefaces.model.map.Polygon;
 @ViewScoped
 @ManagedBean(name = "MbVerProyecto")
 public class MbVerProyecto implements Serializable {
-    
+
     private String centro = "11.247141, -74.205504";
     private List<Proyecto> proyectos;
     private List<ProyectoXSensor> sensores;
@@ -111,22 +111,22 @@ public class MbVerProyecto implements Serializable {
         for (ProyectoXSensor pxs : sensores) {
             listSensores.add(pxs.getSensor());
             LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
-            draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://"+DatosBasicos.ip+":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
+            draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
         }
         List<ZonaXProyecto> zxps = cb.getByOneField(ZonaXProyecto.class, "proyecto", proyecto);
-            for (ZonaXProyecto zxp : zxps) {
-                Polygon polygon = new Polygon();
-                List<CordenadaDeLaZona> cdlzs = cb.getByOneField(CordenadaDeLaZona.class, "zonaAfectada", zxp.getZonaAfectada());
-                for (CordenadaDeLaZona cdlz : cdlzs) {
-                    LatLng ll = new LatLng(new Double(cdlz.getLatitud()), new Double(cdlz.getLongitud()));
-                    polygon.getPaths().add(ll);
-                }
-                polygon.setStrokeColor("#FF0000");
-                polygon.setFillColor("#FF0000");
-                polygon.setStrokeOpacity(0.7);
-                polygon.setFillOpacity(0.5);
-                draggableModel.addOverlay(polygon);
+        for (ZonaXProyecto zxp : zxps) {
+            Polygon polygon = new Polygon();
+            List<CordenadaDeLaZona> cdlzs = cb.getByOneField(CordenadaDeLaZona.class, "zonaAfectada", zxp.getZonaAfectada());
+            for (CordenadaDeLaZona cdlz : cdlzs) {
+                LatLng ll = new LatLng(new Double(cdlz.getLatitud()), new Double(cdlz.getLongitud()));
+                polygon.getPaths().add(ll);
             }
+            polygon.setStrokeColor("#FF0000");
+            polygon.setFillColor("#FF0000");
+            polygon.setStrokeOpacity(0.7);
+            polygon.setFillOpacity(0.5);
+            draggableModel.addOverlay(polygon);
+        }
         cargaGrafica();
     }
 
@@ -218,7 +218,7 @@ public class MbVerProyecto implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(null, new FacesMessage(icono, titulo, mensaje));
     }
-    
+
     public LatLng centroZona() {
         List<LatLng> latLngs = new ArrayList<>();
 

@@ -7,6 +7,7 @@ package co.edu.ucc.sipnat.vista;
 
 import co.edu.ucc.sipnat.base.Md5;
 import co.edu.ucc.sipnat.base.SessionOperations;
+import co.edu.ucc.sipnat.clases.DatosBasicos;
 import co.edu.ucc.sipnat.logica.CommonsBean;
 import co.edu.ucc.sipnat.logica.LogicaLogin;
 import co.edu.ucc.sipnat.modelo.Usuario;
@@ -58,7 +59,7 @@ public class MbLogin implements Serializable {
             isusuario = Boolean.TRUE;
         }
     }
-    
+
     public String accionLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
@@ -83,18 +84,14 @@ public class MbLogin implements Serializable {
     }
 
     public String accionLogout() {
-        init();
+        System.out.println("cerrr sesion");
+        SessionOperations.setSessionValue("USUARIO", null);
+        SessionOperations.setSessionValue("USER", Boolean.FALSE);
+        SessionOperations.setSessionValue("ADMIN", Boolean.FALSE);
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
-        try {
-            SessionOperations.setSessionValue("USER", Boolean.FALSE);
-            context.getExternalContext().invalidateSession();
-        } catch (Exception e) {
-
-        }
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Salida", "Se ha cerrado la sesion correctamente"));
-        String contextPath = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath();
-        redirect(contextPath);
+        context.getExternalContext().invalidateSession();
+        redirect(DatosBasicos.path);
         return null;
     }
 

@@ -6,7 +6,7 @@
         <property name="portNumber" value="5432"/>
         <property name="databaseName" value="sipnat"/>
         <property name="User" value="postgres"/>
-        <property name="Password" value="proyecto"/>
+        <property name="Password" value="12345"/>
         <property name="URL" value="jdbc:postgresql://localhost:5432/sipnat"/>
         <property name="driverClass" value="org.postgresql.Driver"/>
     </jdbc-connection-pool>

@@ -82,7 +82,7 @@ public class MbSensor implements Serializable {
         draggableModel = new DefaultMapModel();
         LatLng coord1 = new LatLng(new Double(latitud), new Double(longitud));
         //Draggable
-        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + row.getTipoSensor().getId()));
+        draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + row.getTipoSensor().getId()));
         for (Marker premarker : draggableModel.getMarkers()) {
             premarker.setDraggable(true);
         }
@@ -109,7 +109,7 @@ public class MbSensor implements Serializable {
         if (sensor.getId() != null) {
             draggableModel = new DefaultMapModel();
             LatLng coord1 = new LatLng(new Double(latitud), new Double(longitud));
-            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + idTipoSensor));
+            draggableModel.addOverlay(new Marker(coord1, "Sensor", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "imagenServlet?id=" + idTipoSensor));
             for (Marker premarker : draggableModel.getMarkers()) {
                 premarker.setDraggable(true);
             }

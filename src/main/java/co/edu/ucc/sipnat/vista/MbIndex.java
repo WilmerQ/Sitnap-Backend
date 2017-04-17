@@ -84,9 +84,9 @@ public class MbIndex implements Serializable {
             sensores = cb.getByOneField(ProyectoXSensor.class, "proyecto", p);
             draggableModel = new DefaultMapModel();
             centroZona();
-            for (ProyectoXSensor pxs : sensores) {                
+            for (ProyectoXSensor pxs : sensores) {
                 LatLng coord1 = new LatLng(new Double(pxs.getSensor().getLatitud()), new Double(pxs.getSensor().getLongitud()));
-                draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://" + DatosBasicos.ip + ":8080/sipnat/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
+                draggableModel.addOverlay(new Marker(coord1, pxs.getSensor().getId() + "", this, "http://" + DatosBasicos.ip + ":" + DatosBasicos.port + "/" + DatosBasicos.path + "/imagenServlet?id=" + pxs.getSensor().getTipoSensor().getId()));
             }
             List<ZonaXProyecto> zxps = cb.getByOneField(ZonaXProyecto.class, "proyecto", p);
             for (ZonaXProyecto zxp : zxps) {
@@ -141,7 +141,7 @@ public class MbIndex implements Serializable {
     public void ocultarPopup() {
         mostarPopupDeGrafica = Boolean.FALSE;
     }
-    
+
     public LatLng centroZona() {
         List<LatLng> latLngs = new ArrayList<>();
 

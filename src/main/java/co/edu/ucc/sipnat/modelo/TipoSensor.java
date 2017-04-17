@@ -20,7 +20,7 @@ public class TipoSensor extends CamposComunesdeEntidad implements Serializable {
     private String nombre;
     private String unidadDeMedida;
     @Lob
-    private byte[] logoDelTipo;
+    private byte[] logoDelTipo; 
     @Transient
     private String uuid;
     @Transient
